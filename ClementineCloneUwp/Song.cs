@@ -16,13 +16,13 @@ namespace ClementineCloneUwp
 
         public string Album { get; set; }
 
-        public TimeSpan Duration { get; set; }
+        public double Duration { get; set; }
 
         public string Genre { get; set; }
 
         public string Path { get; set; }
 
-        public Song(string title, string artist, string album, TimeSpan duration, string genre, string path)
+        public Song(string title, string artist, string album, double duration, string genre, string path)
         {
             Title = title;
             Artist = artist;
@@ -32,12 +32,13 @@ namespace ClementineCloneUwp
             Path = path;
         }
 
-        public Song(string title, string artist, string album, IList<string> genre, string path)
+        public Song(string title, string artist, string album, double duration, IList<string> genre, string path)
         {
             Title = title;
             Artist = artist;
             Album = album;
             this.genre = genre;
+            Duration = duration;
             Path = path;
         }
 

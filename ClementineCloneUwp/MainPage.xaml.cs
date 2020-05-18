@@ -52,13 +52,7 @@ namespace ClementineCloneUwp
             foreach(var item in listsongStorage)
             {
                 MusicProperties metaData = await item.Properties.GetMusicPropertiesAsync();
-                listSong.Add(new Song(metaData.Title,metaData.Artist,metaData.Album,metaData.Genre,item.Path));
-                //metaData.Album
-                //metaData.Artist
-                //metaData.Duration
-                //metaData.Genre
-                //metaData.Title
-         
+                listSong.Add(new Song(metaData.Title,metaData.Artist,metaData.Album, Math.Round(metaData.Duration.TotalMinutes,2), metaData.Genre,item.Path));  
             }
         }
 
