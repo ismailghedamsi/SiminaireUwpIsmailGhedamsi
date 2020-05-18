@@ -56,8 +56,8 @@
                             Grid.Row="1"
                             VerticalAlignment="Center" 
                             Orientation="Horizontal" >
-                    <Button Content="Play" VerticalAlignment="Center" />
-                    <Button Content="Stop"  VerticalAlignment="Center"/>
+                    <Button Content="Play" VerticalAlignment="Center" Click="Continue_playing" />
+                    <Button Content="Stop"  VerticalAlignment="Center" Click="Button_Click_Stop"/>
                 </StackPanel>
 
             </Grid>

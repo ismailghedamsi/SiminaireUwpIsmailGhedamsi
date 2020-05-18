@@ -47,6 +47,7 @@ namespace ClementineCloneUwp
         ObservableCollection<StorageFile> allSongsStorageFiles;
         StorageFolder folder = KnownFolders.MusicLibrary;
 
+
         private async Task RetrieveSongMetadata(ObservableCollection<StorageFile> listsongStorage, ObservableCollection<Song> listSong)
         {
             foreach(var item in listsongStorage)
@@ -80,6 +81,7 @@ namespace ClementineCloneUwp
             //dataGrid.ItemsSource = null;
             //dataGrid.ItemsSource = allSongsStorageFiles;
             Songs = new ObservableCollection<Song>();
+            element = new MediaElement();
 
 
 
@@ -112,8 +114,13 @@ namespace ClementineCloneUwp
 
         }
 
-       
-  
+        private void Continue_playing(object sender,RoutedEventArgs e)
+        {
+            element.Play();
+        }
+
+
+
 
         private void dataGrid_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -143,7 +150,7 @@ namespace ClementineCloneUwp
             //// mediaPlayer.SetFileSource(files[0]);
             //mediaPlayer.Play();
 
-            MediaElement element = new MediaElement();
+            
             element.Source = new Uri(@"C:\Users\ismailghedamsi\Documents\Fantazyitle.mp3");
             element.Play();
 
@@ -163,7 +170,6 @@ namespace ClementineCloneUwp
 
         private async void dataGrid_Drop(object sender, DragEventArgs e)
         {
-            MediaElement element = new MediaElement();
             if (e.DataView.Contains(StandardDataFormats.StorageItems))
             {
                 var items = await e.DataView.GetStorageItemsAsync();
@@ -199,6 +205,11 @@ namespace ClementineCloneUwp
             await RetrieveSongMetadata(allSongsStorageFiles, Songs);
             dataGrid.ItemsSource = null;
             dataGrid.ItemsSource = Songs;
+        }
+
+        private void Button_Click_Stop(object sender, RoutedEventArgs e)
+        {
+            element.Pause();
         }
     }
 }
