@@ -114,8 +114,6 @@ namespace ClementineCloneUwp
 
         }
 
-    
-
         private void dataGrid_DragOver(object sender, DragEventArgs e)
         {
             e.AcceptedOperation = DataPackageOperation.Copy;
@@ -137,10 +135,12 @@ namespace ClementineCloneUwp
                     var contentType = storageFile.ContentType;
                     StorageFolder folder = ApplicationData.Current.LocalFolder;
                     StorageFile newFile = await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.GenerateUniqueName);
+                    MusicProperties metaData = await newFile.Properties.GetMusicPropertiesAsync();
                     element.SetSource(await storageFile.OpenAsync(FileAccessMode.Read), contentType);
                     element.Play();
                     element.MediaEnded += new RoutedEventHandler(playNewSong);
-                    //Songs.Add(new Song("test", "test", "test"));
+                 
+                    Songs.Add(new Song(metaData.Title, metaData.Artist, metaData.Album, Math.Round(metaData.Duration.TotalMinutes, 2), metaData.Genre.Count == 0 ? "" : metaData.Genre[0], newFile.Path));
                     allSongsStorageFiles.Add(newFile);
                     dataGrid.ItemsSource = null;
                     dataGrid.ItemsSource = Songs;
