@@ -5,6 +5,7 @@
     xmlns:local="using:ClementineCloneUwp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="Page_Loaded"
     mc:Ignorable="d"
 
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:syncfusion="using:Syncfusion.SfDataGrid.XForms"
@@ -28,7 +29,7 @@
             </SplitView.Content>
         </SplitView>
 
-        <controls:DataGrid x:Name="dataGrid" AutoGenerateColumns="True" ItemsSource="{x:Bind Songs}"
+        <controls:DataGrid x:Name="dataGrid" AutoGenerateColumns="True" ItemsSource="{x:Bind allSongs}"
                            Margin="400,0,0,0" Grid.Column="1" IsReadOnly="True"
                            DoubleTapped="test"
                            AllowDrop="True"

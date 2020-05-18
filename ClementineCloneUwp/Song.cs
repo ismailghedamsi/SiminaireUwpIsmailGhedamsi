@@ -8,23 +8,39 @@ namespace ClementineCloneUwp
 {
     public class Song
     {
-        public string SongName { get; set; }
-        public string ArtistName { get; set; }
+
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Artist{ get; set; }
+
+        public string Album { get; set; }
+
+        public TimeSpan Duration { get; set; }
+
+        public string Genre { get; set; }
 
         public string Path { get; set; }
 
-        public Song(string songName, string artistName, string path)
+        public Song(string title, string artist, string album, TimeSpan duration, string genre, string path)
         {
-            SongName = songName;
-            ArtistName = artistName;
+            Title = title;
+            Artist = artist;
+            Album = album;
+            Duration = duration;
+            Genre = genre;
             Path = path;
         }
 
-        //public Song(string songName, string artistName, string path)
-        //{
-        //    SongName = songName;
-        //    ArtistName = artistName;
-        //    Path = path;
-        //}
+
+
+
+
+        //metaData.Album
+        //metaData.Artist
+        //metaData.Duration
+        //metaData.Genre
+        //metaData.Title
+
+
     }
 }

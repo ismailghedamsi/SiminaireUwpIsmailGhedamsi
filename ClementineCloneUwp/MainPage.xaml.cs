@@ -45,6 +45,8 @@ namespace ClementineCloneUwp
         List <Song> Songs;
         List<Song> Songs2;
         Windows.Storage.Pickers.FolderPicker picker;
+        ObservableCollection<StorageFile> allSongs;
+        StorageFolder folder = KnownFolders.MusicLibrary;
 
         private async Task RetrieveSongMetadata(ObservableCollection<StorageFile> listsong, ObservableCollection<StorageFile> listMetaData)
         {
@@ -56,6 +58,7 @@ namespace ClementineCloneUwp
                 //metaData.Duration
                 //metaData.Genre
                 //metaData.Title
+         
             }
         }
 
@@ -79,30 +82,31 @@ namespace ClementineCloneUwp
         public MainPage()
         {
             this.InitializeComponent();
-         
+            allSongs = new ObservableCollection<StorageFile>();
+            dataGrid.ItemsSource = null;
+            dataGrid.ItemsSource = allSongs;
 
 
 
 
+            //     Songs = new List<Song>(new Song[4] {
+            //    new Song("A.", "Zero",
+            //        "12 North Third Street, Apartment 45"),
+            //    new Song("B.", "One",
+            //        @"E:\music\music1\Beans\Ace Balthazar\A Corpse Never Wanders.mp3"
+            //        ),
+            //    new Song("C.", "Two",
+            //            @"E:\music\music1\Beans\Ace Balthazar\A Corpse Never Wanders.mp3"
+            //        ),
+            //    new Song("D.", "Three",
+            //            @"E:\music\music1\Beans\Ace Balthazar\A Corpse Never Wanders.mp3"
+            //        )
+            //});
 
-             Songs = new List<Song>(new Song[4] {
-            new Song("A.", "Zero",
-                "12 North Third Street, Apartment 45"),
-            new Song("B.", "One",
-                @"E:\music\music1\Beans\Ace Balthazar\A Corpse Never Wanders.mp3"
-                ),
-            new Song("C.", "Two",
-                    @"E:\music\music1\Beans\Ace Balthazar\A Corpse Never Wanders.mp3"
-                ),
-            new Song("D.", "Three",
-                    @"E:\music\music1\Beans\Ace Balthazar\A Corpse Never Wanders.mp3"
-                )
-        });
 
-
-            Songs2 = new List<Song>(new Song[1] {
-            new Song("Z.", "Z", "Z")
-        });
+            //    Songs2 = new List<Song>(new Song[1] {
+            //    new Song("Z.", "Z", "Z")
+            //});
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -111,10 +115,10 @@ namespace ClementineCloneUwp
             StorageFolder folder = KnownFolders.MusicLibrary;
             var allSongs = new ObservableCollection<StorageFile>();
             await RetreiveFilesInFolders(allSongs, folder);
-            allSongs.ForEach(elem => new MessageDialog(elem.Name).ShowAsync());
 
         }
 
+       
   
 
         private void dataGrid_Tapped(object sender, TappedRoutedEventArgs e)
@@ -178,9 +182,10 @@ namespace ClementineCloneUwp
                     element.SetSource(await storageFile.OpenAsync(FileAccessMode.Read), contentType);
                     element.Play();
                     element.MediaEnded += new RoutedEventHandler(playNewSong);
-                    Songs.Add(new Song("test", "test", "test"));
+                    //Songs.Add(new Song("test", "test", "test"));
+                    allSongs.Add(newFile);
                     dataGrid.ItemsSource = null;
-                    dataGrid.ItemsSource = Songs;
+                    dataGrid.ItemsSource = allSongs;
 
 
                 }
@@ -192,6 +197,13 @@ namespace ClementineCloneUwp
         {
             MessageDialog dialog = new MessageDialog("A new song with be played");
             dialog.ShowAsync();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            RetreiveFilesInFolders(allSongs, folder);
+            dataGrid.ItemsSource = null;
+            dataGrid.ItemsSource = allSongs;
         }
     }
 }
