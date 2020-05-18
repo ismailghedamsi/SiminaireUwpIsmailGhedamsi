@@ -1,0 +1,48 @@
+﻿<Page
+    x:Class="ClementineCloneUwp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ClementineCloneUwp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:syncfusion="using:Syncfusion.SfDataGrid.XForms"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid x:Name="relativePanel">
+        <SplitView x:Name="splitView" DisplayMode="Inline" Grid.Column="0">
+            <SplitView.Pane>
+                <ListView  x:Name="listView">
+                    <Button Content="Search"/>
+                    <Button Content="Library"/>
+                    <Button Content="Playlists"/>
+
+                </ListView>
+            </SplitView.Pane>
+
+            <SplitView.Content>
+                <Button x:Name="showSplitViewButton" Click="Button_Click" VerticalAlignment="Top" >
+                    <Image Source="Assets\hamburger.png" Width="50" Height="50" Stretch="None" />
+                </Button>
+            </SplitView.Content>
+        </SplitView>
+
+        <controls:DataGrid x:Name="dataGrid" AutoGenerateColumns="True" ItemsSource="{x:Bind Songs}"
+                           Margin="400,0,0,0" Grid.Column="1" IsReadOnly="True"
+                           DoubleTapped="test"
+                           AllowDrop="True"
+                           Drop="dataGrid_Drop"
+                           DragOver="dataGrid_DragOver"
+                           SelectionMode="Extended"
+                           >
+
+
+
+        </controls:DataGrid>
+
+        <MediaPlayerElement x:Name="mediaPlayer" Visibility="Collapsed"/>
+
+
+    </Grid>
+</Page>
