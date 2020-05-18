@@ -29,7 +29,7 @@
             </SplitView.Content>
         </SplitView>
 
-        <controls:DataGrid x:Name="dataGrid" AutoGenerateColumns="True" ItemsSource="{x:Bind allSongs}"
+        <controls:DataGrid x:Name="dataGrid" AutoGenerateColumns="True" ItemsSource="{x:Bind Songs}"
                            Margin="400,0,0,0" Grid.Column="1" IsReadOnly="True"
                            DoubleTapped="test"
                            AllowDrop="True"

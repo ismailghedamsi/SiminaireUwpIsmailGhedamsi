@@ -42,17 +42,17 @@ namespace ClementineCloneUwp
     {
 
         MediaElement element;
-        List <Song> Songs;
-        List<Song> Songs2;
+        ObservableCollection<Song> Songs;
         Windows.Storage.Pickers.FolderPicker picker;
-        ObservableCollection<StorageFile> allSongs;
+        ObservableCollection<StorageFile> allSongsStorageFiles;
         StorageFolder folder = KnownFolders.MusicLibrary;
 
-        private async Task RetrieveSongMetadata(ObservableCollection<StorageFile> listsong, ObservableCollection<StorageFile> listMetaData)
+        private async Task RetrieveSongMetadata(ObservableCollection<StorageFile> listsongStorage, ObservableCollection<Song> listSong)
         {
-            foreach(var item in listsong)
+            foreach(var item in listsongStorage)
             {
                 MusicProperties metaData = await item.Properties.GetMusicPropertiesAsync();
+                listSong.Add(new Song(metaData.Title,metaData.Artist,metaData.Album,metaData.Genre,item.Path));
                 //metaData.Album
                 //metaData.Artist
                 //metaData.Duration
@@ -82,10 +82,10 @@ namespace ClementineCloneUwp
         public MainPage()
         {
             this.InitializeComponent();
-            allSongs = new ObservableCollection<StorageFile>();
-            dataGrid.ItemsSource = null;
-            dataGrid.ItemsSource = allSongs;
-
+            allSongsStorageFiles = new ObservableCollection<StorageFile>();
+            //dataGrid.ItemsSource = null;
+            //dataGrid.ItemsSource = allSongsStorageFiles;
+            Songs = new ObservableCollection<Song>();
 
 
 
@@ -183,9 +183,9 @@ namespace ClementineCloneUwp
                     element.Play();
                     element.MediaEnded += new RoutedEventHandler(playNewSong);
                     //Songs.Add(new Song("test", "test", "test"));
-                    allSongs.Add(newFile);
+                    allSongsStorageFiles.Add(newFile);
                     dataGrid.ItemsSource = null;
-                    dataGrid.ItemsSource = allSongs;
+                    dataGrid.ItemsSource = Songs;
 
 
                 }
@@ -199,11 +199,12 @@ namespace ClementineCloneUwp
             dialog.ShowAsync();
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            RetreiveFilesInFolders(allSongs, folder);
+            await RetreiveFilesInFolders(allSongsStorageFiles, folder);
+            await RetrieveSongMetadata(allSongsStorageFiles, Songs);
             dataGrid.ItemsSource = null;
-            dataGrid.ItemsSource = allSongs;
+            dataGrid.ItemsSource = Songs;
         }
     }
 }

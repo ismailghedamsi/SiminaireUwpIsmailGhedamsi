@@ -8,6 +8,7 @@ namespace ClementineCloneUwp
 {
     public class Song
     {
+        private IList<string> genre;
 
         public int Id { get; set; }
         public string Title { get; set; }
@@ -28,6 +29,15 @@ namespace ClementineCloneUwp
             Album = album;
             Duration = duration;
             Genre = genre;
+            Path = path;
+        }
+
+        public Song(string title, string artist, string album, IList<string> genre, string path)
+        {
+            Title = title;
+            Artist = artist;
+            Album = album;
+            this.genre = genre;
             Path = path;
         }
 
