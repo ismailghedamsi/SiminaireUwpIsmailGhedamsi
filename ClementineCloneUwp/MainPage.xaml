@@ -11,7 +11,8 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:syncfusion="using:Syncfusion.SfDataGrid.XForms"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid x:Name="relativePanel">
+    <Grid>
+
         <SplitView x:Name="splitView" DisplayMode="Inline" Grid.Column="0">
             <SplitView.Pane>
                 <ListView  x:Name="listView">
@@ -21,7 +22,6 @@
 
                 </ListView>
             </SplitView.Pane>
-
             <SplitView.Content>
                 <Button x:Name="showSplitViewButton" Click="Button_Click" VerticalAlignment="Top" >
                     <Image Source="Assets\hamburger.png" Width="50" Height="50" Stretch="None" />
@@ -29,9 +29,19 @@
             </SplitView.Content>
         </SplitView>
 
-        <Grid Grid.Column="1" CanBeScrollAnchor="True" ScrollViewer.VerticalScrollBarVisibility="Visible"
+        <RelativePanel Grid.Column="1" >
+            <Grid CanBeScrollAnchor="True" ScrollViewer.VerticalScrollBarVisibility="Visible" x:Name="GridPlayer"
               ScrollViewer.VerticalScrollMode="Enabled" >
-            <controls:DataGrid x:Name="dataGrid" AutoGenerateColumns="True" ItemsSource="{x:Bind Songs}"
+
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <controls:DataGrid x:Name="dataGrid"
+                           AutoGenerateColumns="True" 
+                           ItemsSource="{x:Bind Songs}"
+                           Grid.Row="0"
                            Margin="400,0,0,0" IsReadOnly="True"
                            DoubleTapped="test"
                            AllowDrop="True"
@@ -40,15 +50,20 @@
                            SelectionMode="Extended"
                            ScrollViewer.VerticalScrollBarVisibility="Visible"
                            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                           ScrollViewer.VerticalScrollMode="Enabled"
-                           
-                           >
-            </controls:DataGrid>
-        </Grid>
-   
+                           ScrollViewer.VerticalScrollMode="Enabled">
+                </controls:DataGrid>
+                <StackPanel HorizontalAlignment="Center"
+                            Grid.Row="1"
+                            VerticalAlignment="Center" 
+                            Orientation="Horizontal" >
+                    <Button Content="Play" VerticalAlignment="Center" />
+                    <Button Content="Stop"  VerticalAlignment="Center"/>
+                </StackPanel>
+
+            </Grid>
+
+        </RelativePanel>
 
         <MediaPlayerElement x:Name="mediaPlayer" Visibility="Collapsed"/>
-
-
     </Grid>
 </Page>
