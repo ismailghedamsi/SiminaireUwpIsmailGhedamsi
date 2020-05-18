@@ -57,7 +57,7 @@
                            SelectionMode="Extended"
                            ScrollViewer.VerticalScrollBarVisibility="Visible"
                            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                           ScrollViewer.VerticalScrollMode="Enabled" Grid.ColumnSpan="2" Margin="375,45,0,-142" Grid.RowSpan="3"/>
+                           ScrollViewer.VerticalScrollMode="Enabled" Grid.ColumnSpan="2" Margin="375,45,0,105" Grid.RowSpan="3"/>
         <StackPanel HorizontalAlignment="Center"
                             Grid.Row="2"
                             Grid.ColumnSpan="2"
