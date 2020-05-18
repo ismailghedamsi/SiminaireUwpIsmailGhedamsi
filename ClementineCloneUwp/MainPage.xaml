@@ -29,18 +29,23 @@
             </SplitView.Content>
         </SplitView>
 
-        <controls:DataGrid x:Name="dataGrid" AutoGenerateColumns="True" ItemsSource="{x:Bind Songs}"
-                           Margin="400,0,0,0" Grid.Column="1" IsReadOnly="True"
+        <Grid Grid.Column="1" CanBeScrollAnchor="True" ScrollViewer.VerticalScrollBarVisibility="Visible"
+              ScrollViewer.VerticalScrollMode="Enabled" >
+            <controls:DataGrid x:Name="dataGrid" AutoGenerateColumns="True" ItemsSource="{x:Bind Songs}"
+                           Margin="400,0,0,0" IsReadOnly="True"
                            DoubleTapped="test"
                            AllowDrop="True"
                            Drop="dataGrid_Drop"
                            DragOver="dataGrid_DragOver"
                            SelectionMode="Extended"
+                           ScrollViewer.VerticalScrollBarVisibility="Visible"
+                           ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                           ScrollViewer.VerticalScrollMode="Enabled"
+                           
                            >
-
-
-
-        </controls:DataGrid>
+            </controls:DataGrid>
+        </Grid>
+   
 
         <MediaPlayerElement x:Name="mediaPlayer" Visibility="Collapsed"/>
 
