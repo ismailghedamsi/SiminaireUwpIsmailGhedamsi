@@ -78,31 +78,8 @@ namespace ClementineCloneUwp
         {
             this.InitializeComponent();
             allSongsStorageFiles = new ObservableCollection<StorageFile>();
-            //dataGrid.ItemsSource = null;
-            //dataGrid.ItemsSource = allSongsStorageFiles;
             Songs = new ObservableCollection<Song>();
             element = new MediaElement();
-
-
-
-            //     Songs = new List<Song>(new Song[4] {
-            //    new Song("A.", "Zero",
-            //        "12 North Third Street, Apartment 45"),
-            //    new Song("B.", "One",
-            //        @"E:\music\music1\Beans\Ace Balthazar\A Corpse Never Wanders.mp3"
-            //        ),
-            //    new Song("C.", "Two",
-            //            @"E:\music\music1\Beans\Ace Balthazar\A Corpse Never Wanders.mp3"
-            //        ),
-            //    new Song("D.", "Three",
-            //            @"E:\music\music1\Beans\Ace Balthazar\A Corpse Never Wanders.mp3"
-            //        )
-            //});
-
-
-            //    Songs2 = new List<Song>(new Song[1] {
-            //    new Song("Z.", "Z", "Z")
-            //});
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -119,38 +96,15 @@ namespace ClementineCloneUwp
             element.Play();
         }
 
-
-
-
-        private void dataGrid_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            MessageDialog dialog = new MessageDialog("This song with be played");
-             dialog.ShowAsync();
-        }
-
-        private void dataGrid_SelectionChanged(object sender, Windows.UI.Xaml.Controls.SelectionChangedEventArgs e)
-        {
-            MessageDialog dialog = new MessageDialog("This song with be played");
-            dialog.ShowAsync();
-        }
-
         private async void test(object sender, DoubleTappedRoutedEventArgs e)
         {
 
 
-            //MediaPlayer mediaPlayer = new MediaPlayer();
-            //string path = ((Song)dataGrid.SelectedItem).Path;
             picker = new FolderPicker();
             picker.SuggestedStartLocation = PickerLocationId.Desktop;
             picker.FileTypeFilter.Add("*");
             var folder = await picker.PickSingleFolderAsync();
-            //MediaPlaybackList mediaPlaybackList = new MediaPlaybackList();
-            ////mediaPlaybackList.Items.Add(new MediaPlaybackItem(new MediaSource()))
-            ////var file = folder.GetFileAsync().GetResults();
-            //// mediaPlayer.SetFileSource(files[0]);
-            //mediaPlayer.Play();
-
-            
+   
             element.Source = new Uri(@"C:\Users\ismailghedamsi\Documents\Fantazyitle.mp3");
             element.Play();
 
