@@ -96,16 +96,20 @@ namespace ClementineCloneUwp
             element.Play();
         }
 
-        private async void test(object sender, DoubleTappedRoutedEventArgs e)
+        public async void PickMusicFolder_Click()
         {
-
-
             picker = new FolderPicker();
             picker.SuggestedStartLocation = PickerLocationId.Desktop;
             picker.FileTypeFilter.Add("*");
             var folder = await picker.PickSingleFolderAsync();
-   
-            element.Source = new Uri(@"C:\Users\ismailghedamsi\Documents\Fantazyitle.mp3");
+        }
+
+        private async void test(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            await new MessageDialog("Double clicked").ShowAsync();
+            string paths = ((Song)dataGrid.SelectedItem).Path;
+            StorageFile file = await StorageFile.GetFileFromPathAsync(paths);
+            element.SetSource(await file.OpenAsync(FileAccessMode.Read), file.ContentType);
             element.Play();
 
         }
