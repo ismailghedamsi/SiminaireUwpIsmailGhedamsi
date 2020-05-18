@@ -13,8 +13,10 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>  <!-- Command menu-->
-            <RowDefinition Height="5*"/>  <!-- Grid menu-->
+            <RowDefinition Height="1*"/>
+            <!-- Command menu-->
+            <RowDefinition Height="5*"/>
+            <!-- Grid menu-->
             <RowDefinition  Height="1*" />
             <!-- Command menu-->
 
@@ -24,18 +26,17 @@
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        
+
         <CommandBar x:Name="commandBar" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <AppBarButton Content="Open"/>
             <AppBarButton Content="Close"/>
         </CommandBar>
         <SplitView x:Name="splitView" DisplayMode="Inline" Grid.Column="0" Grid.Row="1">
             <SplitView.Pane>
-                <ListView  x:Name="listView">
+                <ListView  x:Name="listView" Margin="0,-87,10,0">
                     <Button Content="Search"/>
                     <Button Content="Library"/>
                     <Button Content="Playlists"/>
-
                 </ListView>
             </SplitView.Pane>
             <SplitView.Content>
@@ -48,8 +49,6 @@
         <controls:DataGrid x:Name="dataGrid"
                            AutoGenerateColumns="True" 
                            ItemsSource="{x:Bind Songs}"
-                           Grid.Row="1"
-                           Grid.Column="1"
                              IsReadOnly="True"
                            DoubleTapped="test"
                            AllowDrop="True"
@@ -58,19 +57,17 @@
                            SelectionMode="Extended"
                            ScrollViewer.VerticalScrollBarVisibility="Visible"
                            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                           ScrollViewer.VerticalScrollMode="Enabled" Height="1000">
-                           
-                </controls:DataGrid>
-                <StackPanel HorizontalAlignment="Center"
+                           ScrollViewer.VerticalScrollMode="Enabled" Grid.ColumnSpan="2" Margin="375,45,0,-142" Grid.RowSpan="3"/>
+        <StackPanel HorizontalAlignment="Center"
                             Grid.Row="2"
                             Grid.ColumnSpan="2"
                             VerticalAlignment="Center" 
                             Orientation="Horizontal" >
-                    <Button Content="Play" VerticalAlignment="Center" Click="Continue_playing" />
-                    <Button Content="Stop"  VerticalAlignment="Center" Click="Button_Click_Stop"/>
-                </StackPanel>
+            <Button Content="Play" VerticalAlignment="Center" Click="Continue_playing" />
+            <Button Content="Stop"  VerticalAlignment="Center" Click="Button_Click_Stop"/>
+        </StackPanel>
 
-  
+
         <MediaPlayerElement x:Name="mediaPlayer" Visibility="Collapsed"/>
     </Grid>
 </Page>
