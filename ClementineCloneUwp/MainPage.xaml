@@ -41,21 +41,28 @@
                         <Button x:Name="showSplitViewButton" Click="Button_Click" Width="50" Height="50"  FontFamily="Segoe MDL2 Assets" Content="&#xE700;" />
                         <TextBlock VerticalAlignment="Center">Hide</TextBlock>
                     </StackPanel>
-                   
 
-                    <Button Content="Search" FontFamily="Segoe MDL2 Assets" FontSize="25"/>
-                    <Button Content="Library"/>
-             
-                    <Button Content="&#xE8D6;" FontFamily="Segoe MDL2 Assets" FontSize="25"
-                            />
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Playlist" Click="showPlaylistButton_Click" FontFamily="Segoe MDL2 Assets" FontSize="25" Width="50" Height="50"/>
+                        <TextBlock VerticalAlignment="Center">Playlist</TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="&#xE8D6;" FontFamily="Segoe MDL2 Assets" FontSize="25"  Width="50" Height="50" Click="Button_Click_Library" />
+                        <TextBlock VerticalAlignment="Center">Music Library</TextBlock>
+                    </StackPanel>
+
+
+                   
                 </StackPanel>
           
             </SplitView.Pane>
         </SplitView>
-
+        <!-- ItemsSource="{x:Bind Songs}"-->
         <controls:DataGrid x:Name="dataGrid"
                            AutoGenerateColumns="True" 
-                           ItemsSource="{x:Bind Songs}"
+                            Background="Beige"
                              IsReadOnly="True"
                            DoubleTapped="test"
                            AllowDrop="True"

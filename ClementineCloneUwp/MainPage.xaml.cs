@@ -85,9 +85,9 @@ namespace ClementineCloneUwp
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             splitView.IsPaneOpen = !splitView.IsPaneOpen;
-            StorageFolder folder = KnownFolders.MusicLibrary;
-            var allSongs = new ObservableCollection<StorageFile>();
-            await RetreiveFilesInFolders(allSongs, folder);
+            //StorageFolder folder = KnownFolders.MusicLibrary;
+            //var allSongs = new ObservableCollection<StorageFile>();
+            //await RetreiveFilesInFolders(allSongs, folder);
 
         }
 
@@ -159,15 +159,25 @@ namespace ClementineCloneUwp
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            await RetreiveFilesInFolders(allSongsStorageFiles, folder);
-            await RetrieveSongMetadata(allSongsStorageFiles, Songs);
+          
+        }
+
+        private void showPlaylistButton_Click(object sender,RoutedEventArgs e)
+        {
             dataGrid.ItemsSource = null;
-            dataGrid.ItemsSource = Songs;
+
         }
 
         private void Button_Click_Stop(object sender, RoutedEventArgs e)
         {
             element.Pause();
+        }
+
+        private  async void Button_Click_Library(object sender, RoutedEventArgs e)
+        {
+            await RetreiveFilesInFolders(allSongsStorageFiles, folder);
+            await RetrieveSongMetadata(allSongsStorageFiles, Songs);
+            dataGrid.ItemsSource = Songs;
         }
     }
 }
