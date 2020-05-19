@@ -31,19 +31,26 @@
             <AppBarButton Content="Open"/>
             <AppBarButton Content="Close"/>
         </CommandBar>
-        <SplitView x:Name="splitView" DisplayMode="Inline" Grid.Column="0" Grid.Row="1">
+        <SplitView x:Name="splitView" DisplayMode="CompactOverlay" Grid.Column="0" Grid.Row="1"
+                   CompactPaneLength="50" OpenPaneLength="150"
+                   >
             <SplitView.Pane>
-                <ListView  x:Name="listView" Margin="0,-87,10,0">
-                    <Button Content="Search"/>
+                <StackPanel Background="Gray">
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="showSplitViewButton" Click="Button_Click" Width="50" Height="50"  FontFamily="Segoe MDL2 Assets" Content="&#xE700;" />
+                        <TextBlock VerticalAlignment="Center">Hide</TextBlock>
+                    </StackPanel>
+                   
+
+                    <Button Content="Search" FontFamily="Segoe MDL2 Assets" FontSize="25"/>
                     <Button Content="Library"/>
-                    <Button Content="Playlists"/>
-                </ListView>
+             
+                    <Button Content="&#xE8D6;" FontFamily="Segoe MDL2 Assets" FontSize="25"
+                            />
+                </StackPanel>
+          
             </SplitView.Pane>
-            <SplitView.Content>
-                <Button x:Name="showSplitViewButton" Click="Button_Click" VerticalAlignment="Top" >
-                    <Image Source="Assets\hamburger.png" Width="50" Height="50" Stretch="None" />
-                </Button>
-            </SplitView.Content>
         </SplitView>
 
         <controls:DataGrid x:Name="dataGrid"
@@ -66,7 +73,7 @@
             <Button Content="Play" VerticalAlignment="Center" Click="Continue_playing" />
             <Button Content="Stop"  VerticalAlignment="Center" Click="Button_Click_Stop"/>
         </StackPanel>
-
+            
 
         <MediaPlayerElement x:Name="mediaPlayer" Visibility="Collapsed"/>
     </Grid>

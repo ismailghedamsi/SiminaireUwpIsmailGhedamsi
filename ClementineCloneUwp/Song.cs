@@ -42,16 +42,5 @@ namespace ClementineCloneUwp
             Path = path;
         }
 
-
-
-
-
-        //metaData.Album
-        //metaData.Artist
-        //metaData.Duration
-        //metaData.Genre
-        //metaData.Title
-
-
     }
 }
