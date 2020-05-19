@@ -62,16 +62,20 @@
         <!-- ItemsSource="{x:Bind Songs}"-->
         <controls:DataGrid x:Name="dataGrid"
                            AutoGenerateColumns="True" 
+                           HeadersVisibility="All"
                             Background="Beige"
                              IsReadOnly="True"
-                           DoubleTapped="test"
+                           DoubleTapped="test"        
                            AllowDrop="True"
+                           AutoGeneratingColumn="DG1_AutoGeneratingColumn" 
                            Drop="dataGrid_Drop"
                            DragOver="dataGrid_DragOver"
                            SelectionMode="Extended"
                            ScrollViewer.VerticalScrollBarVisibility="Visible"
                            ScrollViewer.HorizontalScrollBarVisibility="Visible"
                            ScrollViewer.VerticalScrollMode="Enabled" Grid.ColumnSpan="2" Margin="375,45,0,105" Grid.RowSpan="3"/>
+
+
         <StackPanel HorizontalAlignment="Center"
                             Grid.Row="2"
                             Grid.ColumnSpan="2"

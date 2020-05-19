@@ -1,9 +1,11 @@
 ﻿
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Syncfusion.Data.Extensions;
 using Syncfusion.XForms.AvatarView;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -151,21 +153,62 @@ namespace ClementineCloneUwp
             }
         }
 
-        private void playNewSong(object sender, RoutedEventArgs e)
+        private async void playNewSong(object sender, RoutedEventArgs e)
         {
             MessageDialog dialog = new MessageDialog("A new song with be played");
-            dialog.ShowAsync();
+           await dialog.ShowAsync();
         }
 
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        public void GenerateColumnHeaderManually()
         {
-          
+            //string title, string artist, string album, double duration, string genre, string path
+
+            DataGridTextColumn idCol = new DataGridTextColumn();
+            idCol.Header = "Id";
+
+            DataGridTextColumn titleCol = new DataGridTextColumn();
+            titleCol.Header = "Title";
+
+            DataGridTextColumn artistCol = new DataGridTextColumn();
+            artistCol.Header = "Artist";
+
+            DataGridTextColumn albumCol = new DataGridTextColumn();
+            albumCol.Header = "Album";
+
+            DataGridTextColumn durationCol = new DataGridTextColumn();
+            durationCol.Header = "Duration";
+
+            DataGridTextColumn genreCol = new DataGridTextColumn();
+            durationCol.Header = "Genre";
+
+            DataGridTextColumn pathCol = new DataGridTextColumn();
+            durationCol.Header = "Path";
+
+            dataGrid.Columns.Add(idCol);
+            dataGrid.Columns.Add(titleCol);
+            dataGrid.Columns.Add(artistCol);
+            dataGrid.Columns.Add(albumCol);
+            dataGrid.Columns.Add(durationCol);
+            dataGrid.Columns.Add(genreCol);
+            dataGrid.Columns.Add(pathCol);
+        }
+
+        private  void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            GenerateColumnHeaderManually();
+        }
+
+        private void DG1_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+
+            e.Column.Visibility = Visibility.Visible;
         }
 
         private void showPlaylistButton_Click(object sender,RoutedEventArgs e)
         {
             dataGrid.ItemsSource = null;
-
+            dataGrid.Columns.Clear();
+            GenerateColumnHeaderManually();
         }
 
         private void Button_Click_Stop(object sender, RoutedEventArgs e)
@@ -177,6 +220,10 @@ namespace ClementineCloneUwp
         {
             await RetreiveFilesInFolders(allSongsStorageFiles, folder);
             await RetrieveSongMetadata(allSongsStorageFiles, Songs);
+            if(Songs.Count == 0 || dataGrid.ItemsSource == null)
+            {
+                dataGrid.Columns.Clear();
+            }
             dataGrid.ItemsSource = Songs;
         }
     }
