@@ -86,6 +86,6 @@
         </StackPanel>
             
 
-        <MediaPlayerElement x:Name="mediaPlayer" Visibility="Collapsed"/>
+       
     </Grid>
 </Page>

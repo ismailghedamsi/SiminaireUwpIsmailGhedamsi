@@ -111,8 +111,22 @@ namespace ClementineCloneUwp
             await new MessageDialog("Double clicked").ShowAsync();
             string paths = ((Song)dataGrid.SelectedItem).Path;
             StorageFile file = await StorageFile.GetFileFromPathAsync(paths);
-            element.SetSource(await file.OpenAsync(FileAccessMode.Read), file.ContentType);
-            element.Play();
+            //element.SetSource(await file.OpenAsync(FileAccessMode.Read), file.ContentType);
+            //element.Volume = 0;
+            //element.Play();
+            MediaPlayer player = new MediaPlayer();
+            player.SetFileSource(file);
+            player.Play();
+            player.MediaEnded += playNewSong;
+
+
+
+            var mediaState = MediaElementState.Playing;
+            if (mediaState ==  MediaElementState.Stopped)
+            {
+                await new MessageDialog("Song ended").ShowAsync();
+            }
+     
 
         }
 
@@ -138,14 +152,21 @@ namespace ClementineCloneUwp
                     StorageFolder folder = ApplicationData.Current.LocalFolder;
                     StorageFile newFile = await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.GenerateUniqueName);
                     MusicProperties metaData = await newFile.Properties.GetMusicPropertiesAsync();
-                    element.SetSource(await storageFile.OpenAsync(FileAccessMode.Read), contentType);
-                    element.Play();
-                    element.MediaEnded += new RoutedEventHandler(playNewSong);
-                 
+                    //element.SetSource(await storageFile.OpenAsync(FileAccessMode.Read), contentType);
+                    //element.Play();
+                    //element.MediaEnded += playNewSong;
+                    MediaPlayer player = new MediaPlayer();
+                    player.SetFileSource(storageFile);
+                    player.Play();
+                    player.MediaEnded += playNewSong;
+
                     Songs.Add(new Song(metaData.Title, metaData.Artist, metaData.Album, Math.Round(metaData.Duration.TotalMinutes, 2), metaData.Genre.Count == 0 ? "" : metaData.Genre[0], newFile.Path));
                     allSongsStorageFiles.Add(newFile);
                     dataGrid.ItemsSource = null;
                     dataGrid.ItemsSource = Songs;
+                  
+                  
+
 
 
                 }
@@ -153,11 +174,45 @@ namespace ClementineCloneUwp
             }
         }
 
-        private async void playNewSong(object sender, RoutedEventArgs e)
+        private async void playNewSong(MediaPlayer sender, object args)
         {
-            MessageDialog dialog = new MessageDialog("A new song with be played");
-           await dialog.ShowAsync();
+            Console.WriteLine("a new song with be played");
+            MediaPlayer player = new MediaPlayer();
+            player.SetFileSource(allSongsStorageFiles[0]);
+            player.Play();
+       
+
+          //  MessageDialog dialog = new MessageDialog("A new song with be played");
+          //dialog.ShowAsync();
         }
+
+        //private async void playNewSong(object sender, RoutedEventArgs e)
+        //{
+        //    switch (element.CurrentState)
+        //    {
+
+        //        case MediaElementState.Buffering:
+        //            break;
+        //        case MediaElementState.Closed:
+        //            MessageDialog dialog = new MessageDialog("A new song with be played");
+        //            await dialog.ShowAsync();
+        //            break;
+
+        //        case MediaElementState.Opening:
+        //            break;
+        //        case MediaElementState.Paused:
+        //            break;
+        //        case MediaElementState.Playing:
+        //            break;
+        //        case MediaElementState.Stopped:
+        //            MessageDialog dialog2 = new MessageDialog("A new song with be played");
+        //            await dialog2.ShowAsync();
+        //            break;
+        //        default:
+        //            break;
+        //    }
+
+        //}
 
         public void GenerateColumnHeaderManually()
         {
