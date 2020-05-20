@@ -108,13 +108,6 @@ namespace ClementineCloneUwp
             player.Play();
             currentPlayingSong = dataGrid.SelectedIndex;
             player.MediaEnded += PlayNewSong_MediaEnded;
-
-            //var mediaState = MediaElementState.Playing;
-            //if (mediaState ==  MediaElementState.Stopped)
-            //{
-            //    await new MessageDialog("Song ended").ShowAsync();
-            //}   
-
         }
 
         private void dataGrid_DragOver(object sender, DragEventArgs e)
@@ -164,7 +157,8 @@ namespace ClementineCloneUwp
         private async void PlayNewSong_MediaEnded(MediaPlayer sender, object args)
         {
             Console.WriteLine("a new song with be played");
-            //player = new MediaPlayer();
+            player.Dispose();
+            player = new MediaPlayer();
             currentPlayingSong++;
             player.SetFileSource(allSongsStorageFiles[currentPlayingSong]);
 
