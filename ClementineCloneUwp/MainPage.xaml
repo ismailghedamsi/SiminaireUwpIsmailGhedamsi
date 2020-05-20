@@ -73,7 +73,7 @@
                            SelectionMode="Extended"
                            ScrollViewer.VerticalScrollBarVisibility="Visible"
                            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                           ScrollViewer.VerticalScrollMode="Enabled" Grid.ColumnSpan="2" Margin="375,45,0,105" Grid.RowSpan="3"/>
+                           ScrollViewer.VerticalScrollMode="Enabled" Grid.ColumnSpan="2" Margin="145,45,0,105" Grid.RowSpan="3"/>
 
 
         <RelativePanel Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" >
@@ -84,6 +84,9 @@
                             Orientation="Horizontal" >
                 <Button Content="Play" VerticalAlignment="Center" Click="Continue_playing" />
                 <Button Content="Stop"  VerticalAlignment="Center" Click="Button_Click_Stop" Margin="10,0,0,0"/>
+                <Slider x:Name="seekPositionSlider"  Width="200"  Margin="10,0,0,0" HorizontalAlignment="Right" ValueChanged="seekPosition_ValueChnaged" Maximum="100" 
+                     
+                    />
             </StackPanel>
             <Slider x:Name="volumeSlider" Header="Volume" Width="200"  Margin="10,0,0,0" HorizontalAlignment="Right"
         ValueChanged="volumeSlider_ValueChanged"   

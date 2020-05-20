@@ -260,5 +260,10 @@ namespace ClementineCloneUwp
             dataGrid.Columns.Clear();
             dataGrid.ItemsSource = songs;
         }
+
+        private void seekPosition_ValueChnaged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            player.PlaybackSession.Position = TimeSpan.FromSeconds(player.PlaybackSession.NaturalDuration.TotalSeconds / seekPositionSlider.Value);
+        }
     }
 }
