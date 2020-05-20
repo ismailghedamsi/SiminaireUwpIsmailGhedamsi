@@ -28,7 +28,7 @@
         </Grid.ColumnDefinitions>
 
         <CommandBar x:Name="commandBar" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-            <AppBarButton Content="Open"/>
+            <AppBarButton x:Name="OpenFolderAppBarButton" Content="Open" Click="OpenFolder_Click" />
             <AppBarButton Content="Close"/>
         </CommandBar>
         <SplitView x:Name="splitView" DisplayMode="CompactOverlay" Grid.Column="0" Grid.Row="1"

@@ -44,7 +44,6 @@ namespace ClementineCloneUwp
     public sealed partial class MainPage : Windows.UI.Xaml.Controls.Page
     {
 
-        private MediaElement element;
         private ObservableCollection<Song> Songs;
         private FolderPicker picker;
         private ObservableCollection<StorageFile> allSongsStorageFiles;
@@ -84,7 +83,6 @@ namespace ClementineCloneUwp
             allSongsStorageFiles = new ObservableCollection<StorageFile>();
             Songs = new ObservableCollection<Song>();
             player = new MediaPlayer();
-            element = new MediaElement();
             volumeSlider.Value = player.Volume * 100;
             currentPlayingSong = 0;
         }
@@ -99,29 +97,23 @@ namespace ClementineCloneUwp
             player.Play();
         }
 
-        public async void PickMusicFolder_Click()
-        {
-            picker = new FolderPicker();
-            picker.SuggestedStartLocation = PickerLocationId.Desktop;
-            picker.FileTypeFilter.Add("*");
-            var folder = await picker.PickSingleFolderAsync();
-        }
 
         private async void PlaySongFromGrid_DoubleClick(object sender, DoubleTappedRoutedEventArgs e)
         {
             string paths = ((Song)dataGrid.SelectedItem).Path;
             StorageFile file = await StorageFile.GetFileFromPathAsync(paths);
+            player.Dispose();
             player = new MediaPlayer();
             player.SetFileSource(file);
             player.Play();
             currentPlayingSong = dataGrid.SelectedIndex;
             player.MediaEnded += PlayNewSong_MediaEnded;
 
-            var mediaState = MediaElementState.Playing;
-            if (mediaState ==  MediaElementState.Stopped)
-            {
-                await new MessageDialog("Song ended").ShowAsync();
-            }   
+            //var mediaState = MediaElementState.Playing;
+            //if (mediaState ==  MediaElementState.Stopped)
+            //{
+            //    await new MessageDialog("Song ended").ShowAsync();
+            //}   
 
         }
 
@@ -133,6 +125,15 @@ namespace ClementineCloneUwp
             e.DragUIOverride.IsContentVisible = true;
             e.DragUIOverride.IsGlyphVisible = true;
 
+        }
+
+        public string FormatTrackDuration(double minutes)
+        {
+            string secondsPart = minutes.ToString().Split(",")[1];
+            string minutesPart = minutes.ToString().Split(",")[0];
+            int nbMinuteFromSeconds = int.Parse(secondsPart) / 60;
+            int restOfSeconds = int.Parse(secondsPart) % 60;
+            return "";
         }
 
         private async void dataGrid_Drop(object sender, DragEventArgs e)
@@ -147,7 +148,7 @@ namespace ClementineCloneUwp
                     StorageFolder folder = ApplicationData.Current.LocalFolder;
                     StorageFile newFile = await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.GenerateUniqueName);
                     MusicProperties metaData = await newFile.Properties.GetMusicPropertiesAsync();
-                    MediaPlayer player = new MediaPlayer();
+                    //MediaPlayer player = new MediaPlayer();
                     player.SetFileSource(storageFile);
                     Songs.Add(new Song(metaData.Title, metaData.Artist, metaData.Album, Math.Round(metaData.Duration.TotalMinutes, 2), metaData.Genre.Count == 0 ? "" : metaData.Genre[0], newFile.Path));
                     dataGrid.ItemsSource = null;
@@ -163,7 +164,7 @@ namespace ClementineCloneUwp
         private async void PlayNewSong_MediaEnded(MediaPlayer sender, object args)
         {
             Console.WriteLine("a new song with be played");
-            player = new MediaPlayer();
+            //player = new MediaPlayer();
             currentPlayingSong++;
             player.SetFileSource(allSongsStorageFiles[currentPlayingSong]);
 
@@ -249,6 +250,21 @@ namespace ClementineCloneUwp
         {
             player.Volume = volumeSlider.Value / 100;
 
+        }
+
+        private async void OpenFolder_Click(object sender, RoutedEventArgs e)
+        {
+            ObservableCollection<StorageFile> folderFiles = new ObservableCollection<StorageFile>();
+            ObservableCollection<Song> songs = new ObservableCollection<Song>();
+            picker = new FolderPicker();
+            picker.SuggestedStartLocation = PickerLocationId.Desktop;
+            picker.FileTypeFilter.Add("*");
+            var folder = await picker.PickSingleFolderAsync();
+            await RetreiveFilesInFolders(folderFiles, folder);
+            await RetrieveSongMetadata(folderFiles, songs);
+            dataGrid.ItemsSource = null;
+            dataGrid.Columns.Clear();
+            dataGrid.ItemsSource = songs;
         }
     }
 }
