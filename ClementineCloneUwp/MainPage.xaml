@@ -38,7 +38,7 @@
                 <StackPanel Background="Gray">
 
                     <StackPanel Orientation="Horizontal">
-                        <Button x:Name="showSplitViewButton" Click="Button_Click" Width="50" Height="50"  FontFamily="Segoe MDL2 Assets" Content="&#xE700;" />
+                        <Button x:Name="showSplitViewButton" Click="OpenCloseSplitView_Click" Width="50" Height="50"  FontFamily="Segoe MDL2 Assets" Content="&#xE700;" />
                         <TextBlock VerticalAlignment="Center">Hide</TextBlock>
                     </StackPanel>
 
@@ -65,7 +65,7 @@
                            HeadersVisibility="All"
                             Background="Beige"
                              IsReadOnly="True"
-                           DoubleTapped="test"        
+                           DoubleTapped="PlaySongFromGrid_DoubleClick"        
                            AllowDrop="True"
                            AutoGeneratingColumn="DG1_AutoGeneratingColumn" 
                            Drop="dataGrid_Drop"
@@ -76,18 +76,25 @@
                            ScrollViewer.VerticalScrollMode="Enabled" Grid.ColumnSpan="2" Margin="375,45,0,105" Grid.RowSpan="3"/>
 
 
-        <StackPanel x:Name="stackManelMusicControl" HorizontalAlignment="Center"
+        <RelativePanel Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" >
+            <StackPanel x:Name="stackManelMusicControl" HorizontalAlignment="Center"
                             Grid.Row="2"
                             Grid.ColumnSpan="2"
                             VerticalAlignment="Center" 
+                            RelativePanel.AlignHorizontalCenterWithPanel="True"
                             Orientation="Horizontal" >
-            <Button Content="Play" VerticalAlignment="Center" Click="Continue_playing" />
-            <Button Content="Stop"  VerticalAlignment="Center" Click="Button_Click_Stop"/>
-            <Slider x:Name="volumeSlider" Header="Volume" Width="200" 
-        ValueChanged="volumeSlider_ValueChanged"/>
-        </StackPanel>
-            
+                <Button Content="Play" VerticalAlignment="Center" Click="Continue_playing" />
+                <Button Content="Stop"  VerticalAlignment="Center" Click="Button_Click_Stop" Margin="10,0,0,0"/>
+            </StackPanel>
+            <Slider x:Name="volumeSlider" Header="Volume" Width="200"  Margin="10,0,0,0" HorizontalAlignment="Right"
+        ValueChanged="volumeSlider_ValueChanged"    Grid.Row="2" Grid.ColumnSpan="2" 
+                    RelativePanel.AlignHorizontalCenterWith="stackManelMusicControl"
+                    RelativePanel.AlignRightWithPanel="True"
+                    />
+        </RelativePanel>
+        
+   
 
-       
+
     </Grid>
 </Page>

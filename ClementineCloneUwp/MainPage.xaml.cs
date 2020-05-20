@@ -87,13 +87,9 @@ namespace ClementineCloneUwp
             volumeSlider.Value = player.Volume * 100;
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void OpenCloseSplitView_Click(object sender, RoutedEventArgs e)
         {
             splitView.IsPaneOpen = !splitView.IsPaneOpen;
-            //StorageFolder folder = KnownFolders.MusicLibrary;
-            //var allSongs = new ObservableCollection<StorageFile>();
-            //await RetreiveFilesInFolders(allSongs, folder);
-
         }
 
         private void Continue_playing(object sender,RoutedEventArgs e)
@@ -109,27 +105,20 @@ namespace ClementineCloneUwp
             var folder = await picker.PickSingleFolderAsync();
         }
 
-        private async void test(object sender, DoubleTappedRoutedEventArgs e)
+        private async void PlaySongFromGrid_DoubleClick(object sender, DoubleTappedRoutedEventArgs e)
         {
-            await new MessageDialog("Double clicked").ShowAsync();
             string paths = ((Song)dataGrid.SelectedItem).Path;
             StorageFile file = await StorageFile.GetFileFromPathAsync(paths);
-            //element.SetSource(await file.OpenAsync(FileAccessMode.Read), file.ContentType);
-            //element.Volume = 0;
-            //element.Play();
             player = new MediaPlayer();
             player.SetFileSource(file);
             player.Play();
             player.MediaEnded += playNewSong;
 
-
-
             var mediaState = MediaElementState.Playing;
             if (mediaState ==  MediaElementState.Stopped)
             {
                 await new MessageDialog("Song ended").ShowAsync();
-            }
-     
+            }   
 
         }
 
@@ -155,9 +144,6 @@ namespace ClementineCloneUwp
                     StorageFolder folder = ApplicationData.Current.LocalFolder;
                     StorageFile newFile = await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.GenerateUniqueName);
                     MusicProperties metaData = await newFile.Properties.GetMusicPropertiesAsync();
-                    //element.SetSource(await storageFile.OpenAsync(FileAccessMode.Read), contentType);
-                    //element.Play();
-                    //element.MediaEnded += playNewSong;
                     MediaPlayer player = new MediaPlayer();
                     player.SetFileSource(storageFile);
                     player.Play();
@@ -167,9 +153,6 @@ namespace ClementineCloneUwp
                     allSongsStorageFiles.Add(newFile);
                     dataGrid.ItemsSource = null;
                     dataGrid.ItemsSource = Songs;
-                  
-                  
-
 
 
                 }
@@ -184,42 +167,12 @@ namespace ClementineCloneUwp
             player.SetFileSource(allSongsStorageFiles[0]);
             player.Play();
        
-
-          //  MessageDialog dialog = new MessageDialog("A new song with be played");
-          //dialog.ShowAsync();
         }
 
-        //private async void playNewSong(object sender, RoutedEventArgs e)
-        //{
-        //    switch (element.CurrentState)
-        //    {
-
-        //        case MediaElementState.Buffering:
-        //            break;
-        //        case MediaElementState.Closed:
-        //            MessageDialog dialog = new MessageDialog("A new song with be played");
-        //            await dialog.ShowAsync();
-        //            break;
-
-        //        case MediaElementState.Opening:
-        //            break;
-        //        case MediaElementState.Paused:
-        //            break;
-        //        case MediaElementState.Playing:
-        //            break;
-        //        case MediaElementState.Stopped:
-        //            MessageDialog dialog2 = new MessageDialog("A new song with be played");
-        //            await dialog2.ShowAsync();
-        //            break;
-        //        default:
-        //            break;
-        //    }
-
-        //}
+  
 
         public void GenerateColumnHeaderManually()
         {
-            //string title, string artist, string album, double duration, string genre, string path
 
             DataGridTextColumn idCol = new DataGridTextColumn();
             idCol.Header = "Id";
