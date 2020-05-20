@@ -76,13 +76,15 @@
                            ScrollViewer.VerticalScrollMode="Enabled" Grid.ColumnSpan="2" Margin="375,45,0,105" Grid.RowSpan="3"/>
 
 
-        <StackPanel HorizontalAlignment="Center"
+        <StackPanel x:Name="stackManelMusicControl" HorizontalAlignment="Center"
                             Grid.Row="2"
                             Grid.ColumnSpan="2"
                             VerticalAlignment="Center" 
                             Orientation="Horizontal" >
             <Button Content="Play" VerticalAlignment="Center" Click="Continue_playing" />
             <Button Content="Stop"  VerticalAlignment="Center" Click="Button_Click_Stop"/>
+            <Slider x:Name="volumeSlider" Header="Volume" Width="200" 
+        ValueChanged="volumeSlider_ValueChanged"/>
         </StackPanel>
             
 

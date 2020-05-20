@@ -48,6 +48,7 @@ namespace ClementineCloneUwp
         Windows.Storage.Pickers.FolderPicker picker;
         ObservableCollection<StorageFile> allSongsStorageFiles;
         StorageFolder folder = KnownFolders.MusicLibrary;
+        MediaPlayer player;
 
 
         private async Task RetrieveSongMetadata(ObservableCollection<StorageFile> listsongStorage, ObservableCollection<Song> listSong)
@@ -81,7 +82,9 @@ namespace ClementineCloneUwp
             this.InitializeComponent();
             allSongsStorageFiles = new ObservableCollection<StorageFile>();
             Songs = new ObservableCollection<Song>();
+            player = new MediaPlayer();
             element = new MediaElement();
+            volumeSlider.Value = player.Volume * 100;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -114,7 +117,7 @@ namespace ClementineCloneUwp
             //element.SetSource(await file.OpenAsync(FileAccessMode.Read), file.ContentType);
             //element.Volume = 0;
             //element.Play();
-            MediaPlayer player = new MediaPlayer();
+            player = new MediaPlayer();
             player.SetFileSource(file);
             player.Play();
             player.MediaEnded += playNewSong;
@@ -280,6 +283,12 @@ namespace ClementineCloneUwp
                 dataGrid.Columns.Clear();
             }
             dataGrid.ItemsSource = Songs;
+        }
+
+        private void volumeSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            player.Volume = volumeSlider.Value / 100;
+
         }
     }
 }
