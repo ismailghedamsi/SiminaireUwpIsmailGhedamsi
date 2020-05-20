@@ -78,8 +78,7 @@
 
         <RelativePanel Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" >
             <StackPanel x:Name="stackManelMusicControl" HorizontalAlignment="Center"
-                            Grid.Row="2"
-                            Grid.ColumnSpan="2"
+                       
                             VerticalAlignment="Center" 
                             RelativePanel.AlignHorizontalCenterWithPanel="True"
                             Orientation="Horizontal" >
@@ -87,7 +86,7 @@
                 <Button Content="Stop"  VerticalAlignment="Center" Click="Button_Click_Stop" Margin="10,0,0,0"/>
             </StackPanel>
             <Slider x:Name="volumeSlider" Header="Volume" Width="200"  Margin="10,0,0,0" HorizontalAlignment="Right"
-        ValueChanged="volumeSlider_ValueChanged"    Grid.Row="2" Grid.ColumnSpan="2" 
+        ValueChanged="volumeSlider_ValueChanged"   
                     RelativePanel.AlignHorizontalCenterWith="stackManelMusicControl"
                     RelativePanel.AlignRightWithPanel="True"
                     />

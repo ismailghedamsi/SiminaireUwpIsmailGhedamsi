@@ -112,7 +112,7 @@ namespace ClementineCloneUwp
             player = new MediaPlayer();
             player.SetFileSource(file);
             player.Play();
-            player.MediaEnded += playNewSong;
+            player.MediaEnded += PlayNewSong_MediaEnded;
 
             var mediaState = MediaElementState.Playing;
             if (mediaState ==  MediaElementState.Stopped)
@@ -147,7 +147,7 @@ namespace ClementineCloneUwp
                     MediaPlayer player = new MediaPlayer();
                     player.SetFileSource(storageFile);
                     player.Play();
-                    player.MediaEnded += playNewSong;
+                    player.MediaEnded += PlayNewSong_MediaEnded;
 
                     Songs.Add(new Song(metaData.Title, metaData.Artist, metaData.Album, Math.Round(metaData.Duration.TotalMinutes, 2), metaData.Genre.Count == 0 ? "" : metaData.Genre[0], newFile.Path));
                     allSongsStorageFiles.Add(newFile);
@@ -160,7 +160,7 @@ namespace ClementineCloneUwp
             }
         }
 
-        private async void playNewSong(MediaPlayer sender, object args)
+        private async void PlayNewSong_MediaEnded(MediaPlayer sender, object args)
         {
             Console.WriteLine("a new song with be played");
             MediaPlayer player = new MediaPlayer();
@@ -168,7 +168,6 @@ namespace ClementineCloneUwp
             player.Play();
        
         }
-
   
 
         public void GenerateColumnHeaderManually()
