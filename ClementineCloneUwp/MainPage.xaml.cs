@@ -43,13 +43,13 @@ namespace ClementineCloneUwp
     public sealed partial class MainPage : Windows.UI.Xaml.Controls.Page
     {
 
-        MediaElement element;
-        ObservableCollection<Song> Songs;
-        Windows.Storage.Pickers.FolderPicker picker;
-        ObservableCollection<StorageFile> allSongsStorageFiles;
-        StorageFolder folder = KnownFolders.MusicLibrary;
-        MediaPlayer player;
-
+        private MediaElement element;
+        private ObservableCollection<Song> Songs;
+        private FolderPicker picker;
+        private ObservableCollection<StorageFile> allSongsStorageFiles;
+        private StorageFolder folder = KnownFolders.MusicLibrary;
+        private MediaPlayer player;
+        private static int currentPlayingSong;
 
         private async Task RetrieveSongMetadata(ObservableCollection<StorageFile> listsongStorage, ObservableCollection<Song> listSong)
         {
@@ -85,9 +85,10 @@ namespace ClementineCloneUwp
             player = new MediaPlayer();
             element = new MediaElement();
             volumeSlider.Value = player.Volume * 100;
+            currentPlayingSong = 0;
         }
 
-        private async void OpenCloseSplitView_Click(object sender, RoutedEventArgs e)
+        private  void OpenCloseSplitView_Click(object sender, RoutedEventArgs e)
         {
             splitView.IsPaneOpen = !splitView.IsPaneOpen;
         }
@@ -160,7 +161,7 @@ namespace ClementineCloneUwp
             }
         }
 
-        private async void PlayNewSong_MediaEnded(MediaPlayer sender, object args)
+        private  void PlayNewSong_MediaEnded(MediaPlayer sender, object args)
         {
             Console.WriteLine("a new song with be played");
             MediaPlayer player = new MediaPlayer();
