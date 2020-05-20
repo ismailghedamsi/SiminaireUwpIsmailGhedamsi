@@ -22,6 +22,7 @@ using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -95,7 +96,7 @@ namespace ClementineCloneUwp
 
         private void Continue_playing(object sender,RoutedEventArgs e)
         {
-            element.Play();
+            player.Play();
         }
 
         public async void PickMusicFolder_Click()
@@ -113,6 +114,7 @@ namespace ClementineCloneUwp
             player = new MediaPlayer();
             player.SetFileSource(file);
             player.Play();
+            currentPlayingSong = dataGrid.SelectedIndex;
             player.MediaEnded += PlayNewSong_MediaEnded;
 
             var mediaState = MediaElementState.Playing;
@@ -147,12 +149,9 @@ namespace ClementineCloneUwp
                     MusicProperties metaData = await newFile.Properties.GetMusicPropertiesAsync();
                     MediaPlayer player = new MediaPlayer();
                     player.SetFileSource(storageFile);
-                    player.Play();
-                    player.MediaEnded += PlayNewSong_MediaEnded;
-
                     Songs.Add(new Song(metaData.Title, metaData.Artist, metaData.Album, Math.Round(metaData.Duration.TotalMinutes, 2), metaData.Genre.Count == 0 ? "" : metaData.Genre[0], newFile.Path));
-                    allSongsStorageFiles.Add(newFile);
                     dataGrid.ItemsSource = null;
+                    dataGrid.Columns.Clear();
                     dataGrid.ItemsSource = Songs;
 
 
@@ -161,11 +160,19 @@ namespace ClementineCloneUwp
             }
         }
 
-        private  void PlayNewSong_MediaEnded(MediaPlayer sender, object args)
+        private async void PlayNewSong_MediaEnded(MediaPlayer sender, object args)
         {
             Console.WriteLine("a new song with be played");
-            MediaPlayer player = new MediaPlayer();
-            player.SetFileSource(allSongsStorageFiles[0]);
+            player = new MediaPlayer();
+            currentPlayingSong++;
+            player.SetFileSource(allSongsStorageFiles[currentPlayingSong]);
+
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+            () =>
+            {
+                dataGrid.SelectedIndex = currentPlayingSong;
+            }
+            );
             player.Play();
        
         }
@@ -224,7 +231,7 @@ namespace ClementineCloneUwp
 
         private void Button_Click_Stop(object sender, RoutedEventArgs e)
         {
-            element.Pause();
+            player.Pause();
         }
 
         private  async void Button_Click_Library(object sender, RoutedEventArgs e)
