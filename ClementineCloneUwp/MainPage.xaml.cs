@@ -51,6 +51,12 @@ namespace ClementineCloneUwp
         private MediaPlayer player;
         private static int currentPlayingSong;
 
+
+
+        TimeSpan _position;
+        DispatcherTimer _timer = new DispatcherTimer();
+
+
         private async Task RetrieveSongMetadata(ObservableCollection<StorageFile> listsongStorage, ObservableCollection<Song> listSong)
         {
             foreach(var item in listsongStorage)
@@ -80,11 +86,18 @@ namespace ClementineCloneUwp
         public MainPage()
         {
             this.InitializeComponent();
+        
             allSongsStorageFiles = new ObservableCollection<StorageFile>();
             Songs = new ObservableCollection<Song>();
             player = new MediaPlayer();
             volumeSlider.Value = player.Volume * 100;
             currentPlayingSong = 0;
+       
+        }
+
+        private void ticktock(object sender, object e)
+        {
+            seekPositionSlider.Value += 1;
         }
 
         private  void OpenCloseSplitView_Click(object sender, RoutedEventArgs e)
@@ -100,6 +113,9 @@ namespace ClementineCloneUwp
 
         private async void PlaySongFromGrid_DoubleClick(object sender, DoubleTappedRoutedEventArgs e)
         {
+
+    
+
             string paths = ((Song)dataGrid.SelectedItem).Path;
             StorageFile file = await StorageFile.GetFileFromPathAsync(paths);
             player.Dispose();
@@ -108,6 +124,10 @@ namespace ClementineCloneUwp
             player.Play();
             currentPlayingSong = dataGrid.SelectedIndex;
             player.MediaEnded += PlayNewSong_MediaEnded;
+
+            _timer.Interval = TimeSpan.FromMilliseconds(10000);
+            _timer.Tick += ticktock;
+            _timer.Start();
         }
 
         private void dataGrid_DragOver(object sender, DragEventArgs e)

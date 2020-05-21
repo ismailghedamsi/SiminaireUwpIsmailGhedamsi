@@ -88,6 +88,7 @@
                      
                     />
             </StackPanel>
+
             <Slider x:Name="volumeSlider" Header="Volume" Width="200"  Margin="10,0,0,0" HorizontalAlignment="Right"
         ValueChanged="volumeSlider_ValueChanged"   
                     RelativePanel.AlignHorizontalCenterWith="stackManelMusicControl"
