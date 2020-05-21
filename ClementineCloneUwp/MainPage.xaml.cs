@@ -147,6 +147,7 @@ namespace ClementineCloneUwp
             var seekPosition = seekPositionSlider.Value / 100;
             var playFrom = player.PlaybackSession.NaturalDuration * seekPosition;
             player.PlaybackSession.Position = playFrom;
+         
         }
 
 
