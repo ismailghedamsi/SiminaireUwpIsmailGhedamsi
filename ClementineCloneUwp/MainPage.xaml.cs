@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -50,6 +51,7 @@ namespace ClementineCloneUwp
         private StorageFolder folder = KnownFolders.MusicLibrary;
         private MediaPlayer player;
         private static int currentPlayingSong;
+        private bool manuallySeek;
 
 
         private async Task RetrieveSongMetadata(ObservableCollection<StorageFile> listsongStorage, ObservableCollection<Song> listSong)
@@ -86,14 +88,10 @@ namespace ClementineCloneUwp
             Songs = new ObservableCollection<Song>();
             player = new MediaPlayer();
             player.MediaEnded += PlayNewSong_MediaEnded;
+            seekPositionSlider.ValueChanged += seekPosition_ValueChnaged;
             volumeSlider.Value = player.Volume * 100;
             currentPlayingSong = 0;
        
-        }
-
-        private void ticktock(object sender, object e)
-        {
-            seekPositionSlider.Value += 1;
         }
 
         private  void OpenCloseSplitView_Click(object sender, RoutedEventArgs e)
@@ -107,10 +105,11 @@ namespace ClementineCloneUwp
         }
 
 
-        private async void PlaySongFromGrid_DoubleClick(object sender, DoubleTappedRoutedEventArgs e)
+
+        private async void PlaySongFromGrid_DoubleClick(object sender, DoubleTappedRoutedEventArgs ev)
         {
 
-    
+             
 
             string paths = ((Song)dataGrid.SelectedItem).Path;
             StorageFile file = await StorageFile.GetFileFromPathAsync(paths);
@@ -118,11 +117,41 @@ namespace ClementineCloneUwp
             player = new MediaPlayer();
             player.MediaEnded += PlayNewSong_MediaEnded;
             player.SetFileSource(file);
-            player.Play();
+
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High,
+             () =>
+             {
+                 player.Play();
+             }
+             );
+         
             currentPlayingSong = dataGrid.SelectedIndex;
             seekPositionSlider.Value = 0;
+            seekPositionSlider.ManipulationCompleted += SeekPositionSlider_ManipulationCompleted;
+
+
+
+
+            Timer timer = new System.Threading.Timer(async (e) =>
+            {
+                await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+               () =>
+               {
+           seekPositionSlider.Value += player.PlaybackSession.NaturalDuration.TotalSeconds / 100;
+                   Debug.WriteLine(seekPositionSlider.Value);
+                }
+             );
+            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
 
         }
+
+        private void SeekPositionSlider_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        {
+            var seekPosition = seekPositionSlider.Value / 100;
+            var playFrom = player.PlaybackSession.NaturalDuration * seekPosition;
+            player.PlaybackSession.Position = playFrom;
+        }
+
 
         private void dataGrid_DragOver(object sender, DragEventArgs e)
         {
@@ -283,16 +312,7 @@ namespace ClementineCloneUwp
 
         private  void seekPosition_ValueChnaged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            //double sliderValue = seekPositionSlider.Value / 100;
-            //double trackLengthSecond = player.PlaybackSession.NaturalDuration.TotalSeconds;
-            //double newPosition = trackLengthSecond / sliderValue;
-            //player.PlaybackSession.Position = TimeSpan.FromSeconds(newPosition);
-
-            var seekPosition = seekPositionSlider.Value / 100;
-            var playFrom = player.PlaybackSession.NaturalDuration * seekPosition;
-            player.PlaybackSession.Position = playFrom;
-
-   
+           
         }
 
         private void PlayNextSong_Click(object sender, RoutedEventArgs e)
