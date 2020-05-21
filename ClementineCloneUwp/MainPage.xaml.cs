@@ -52,11 +52,6 @@ namespace ClementineCloneUwp
         private static int currentPlayingSong;
 
 
-
-        TimeSpan _position;
-        DispatcherTimer _timer = new DispatcherTimer();
-
-
         private async Task RetrieveSongMetadata(ObservableCollection<StorageFile> listsongStorage, ObservableCollection<Song> listSong)
         {
             foreach(var item in listsongStorage)
@@ -90,6 +85,7 @@ namespace ClementineCloneUwp
             allSongsStorageFiles = new ObservableCollection<StorageFile>();
             Songs = new ObservableCollection<Song>();
             player = new MediaPlayer();
+            player.MediaEnded += PlayNewSong_MediaEnded;
             volumeSlider.Value = player.Volume * 100;
             currentPlayingSong = 0;
        
@@ -120,14 +116,12 @@ namespace ClementineCloneUwp
             StorageFile file = await StorageFile.GetFileFromPathAsync(paths);
             player.Dispose();
             player = new MediaPlayer();
+            player.MediaEnded += PlayNewSong_MediaEnded;
             player.SetFileSource(file);
             player.Play();
             currentPlayingSong = dataGrid.SelectedIndex;
-            player.MediaEnded += PlayNewSong_MediaEnded;
+            seekPositionSlider.Value = 0;
 
-            _timer.Interval = TimeSpan.FromMilliseconds(10000);
-            _timer.Tick += ticktock;
-            _timer.Start();
         }
 
         private void dataGrid_DragOver(object sender, DragEventArgs e)
@@ -179,16 +173,22 @@ namespace ClementineCloneUwp
             Console.WriteLine("a new song with be played");
             player.Dispose();
             player = new MediaPlayer();
+            player.MediaEnded += PlayNewSong_MediaEnded;
             currentPlayingSong++;
-            player.SetFileSource(allSongsStorageFiles[currentPlayingSong]);
+            if(allSongsStorageFiles.Count > currentPlayingSong)
+            {
+                player.SetFileSource(allSongsStorageFiles[currentPlayingSong]);
+            }
 
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
             () =>
             {
                 dataGrid.SelectedIndex = currentPlayingSong;
+                seekPositionSlider.Value = 0;
             }
             );
             player.Play();
+            
        
         }
   
@@ -263,7 +263,7 @@ namespace ClementineCloneUwp
         private void volumeSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             player.Volume = volumeSlider.Value / 100;
-
+            player.MediaEnded += PlayNewSong_MediaEnded;
         }
 
         private async void OpenFolder_Click(object sender, RoutedEventArgs e)
@@ -281,9 +281,23 @@ namespace ClementineCloneUwp
             dataGrid.ItemsSource = songs;
         }
 
-        private void seekPosition_ValueChnaged(object sender, RangeBaseValueChangedEventArgs e)
+        private  void seekPosition_ValueChnaged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            player.PlaybackSession.Position = TimeSpan.FromSeconds(player.PlaybackSession.NaturalDuration.TotalSeconds / seekPositionSlider.Value);
+            //double sliderValue = seekPositionSlider.Value / 100;
+            //double trackLengthSecond = player.PlaybackSession.NaturalDuration.TotalSeconds;
+            //double newPosition = trackLengthSecond / sliderValue;
+            //player.PlaybackSession.Position = TimeSpan.FromSeconds(newPosition);
+
+            var seekPosition = seekPositionSlider.Value / 100;
+            var playFrom = player.PlaybackSession.NaturalDuration * seekPosition;
+            player.PlaybackSession.Position = playFrom;
+
+   
+        }
+
+        private void PlayNextSong_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
