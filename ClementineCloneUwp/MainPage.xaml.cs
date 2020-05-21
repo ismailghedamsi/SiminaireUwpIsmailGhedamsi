@@ -50,7 +50,7 @@ namespace ClementineCloneUwp
         private ObservableCollection<StorageFile> allSongsStorageFiles;
         private StorageFolder folder = KnownFolders.MusicLibrary;
         private MediaPlayer player;
-        private static int currentPlayingSong;
+        private static int currentPlayingSongIndex;
         private bool manuallySeek;
 
 
@@ -88,9 +88,8 @@ namespace ClementineCloneUwp
             Songs = new ObservableCollection<Song>();
             player = new MediaPlayer();
             player.MediaEnded += PlayNewSong_MediaEnded;
-            seekPositionSlider.ValueChanged += seekPosition_ValueChnaged;
             volumeSlider.Value = player.Volume * 100;
-            currentPlayingSong = 0;
+            currentPlayingSongIndex = 0;
        
         }
 
@@ -109,8 +108,6 @@ namespace ClementineCloneUwp
         private async void PlaySongFromGrid_DoubleClick(object sender, DoubleTappedRoutedEventArgs ev)
         {
 
-             
-
             string paths = ((Song)dataGrid.SelectedItem).Path;
             StorageFile file = await StorageFile.GetFileFromPathAsync(paths);
             player.Dispose();
@@ -124,25 +121,25 @@ namespace ClementineCloneUwp
                  player.Play();
              }
              );
-         
-            currentPlayingSong = dataGrid.SelectedIndex;
+
+            currentPlayingSongIndex = dataGrid.SelectedIndex;
             seekPositionSlider.Value = 0;
             seekPositionSlider.ManipulationCompleted += SeekPositionSlider_ManipulationCompleted;
+            UpdateTimelineSlider();
+        }
 
-
-
-
+        private void UpdateTimelineSlider()
+        {
             Timer timer = new System.Threading.Timer(async (e) =>
             {
                 await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                () =>
                {
-           seekPositionSlider.Value += player.PlaybackSession.NaturalDuration.TotalSeconds / 100;
+                   seekPositionSlider.Value += player.PlaybackSession.NaturalDuration.TotalSeconds / 100;
                    Debug.WriteLine(seekPositionSlider.Value);
-                }
+               }
              );
-            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
-
+            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
         }
 
         private void SeekPositionSlider_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
@@ -184,7 +181,6 @@ namespace ClementineCloneUwp
                     StorageFolder folder = ApplicationData.Current.LocalFolder;
                     StorageFile newFile = await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.GenerateUniqueName);
                     MusicProperties metaData = await newFile.Properties.GetMusicPropertiesAsync();
-                    //MediaPlayer player = new MediaPlayer();
                     player.SetFileSource(storageFile);
                     Songs.Add(new Song(metaData.Title, metaData.Artist, metaData.Album, Math.Round(metaData.Duration.TotalMinutes, 2), metaData.Genre.Count == 0 ? "" : metaData.Genre[0], newFile.Path));
                     dataGrid.ItemsSource = null;
@@ -203,16 +199,16 @@ namespace ClementineCloneUwp
             player.Dispose();
             player = new MediaPlayer();
             player.MediaEnded += PlayNewSong_MediaEnded;
-            currentPlayingSong++;
-            if(allSongsStorageFiles.Count > currentPlayingSong)
+            currentPlayingSongIndex++;
+            if(allSongsStorageFiles.Count > currentPlayingSongIndex)
             {
-                player.SetFileSource(allSongsStorageFiles[currentPlayingSong]);
+                player.SetFileSource(allSongsStorageFiles[currentPlayingSongIndex]);
             }
 
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
             () =>
             {
-                dataGrid.SelectedIndex = currentPlayingSong;
+                dataGrid.SelectedIndex = currentPlayingSongIndex;
                 seekPositionSlider.Value = 0;
             }
             );
@@ -310,14 +306,10 @@ namespace ClementineCloneUwp
             dataGrid.ItemsSource = songs;
         }
 
-        private  void seekPosition_ValueChnaged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-           
-        }
 
-        private void PlayNextSong_Click(object sender, RoutedEventArgs e)
+        private void PlayNextSongButton_Click(object sender, RoutedEventArgs e)
         {
-
+            dataGrid.SelectedItem = currentPlayingSongIndex;
         }
     }
 }

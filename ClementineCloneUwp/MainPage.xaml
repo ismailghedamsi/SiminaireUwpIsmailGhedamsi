@@ -85,7 +85,7 @@
                 <Button  FontFamily="Segoe MDL2 Assets" Content="&#xE768;" VerticalAlignment="Center" Click="Continue_playing" />
                 <Button  FontFamily="Segoe MDL2 Assets" Content="&#xE769;"  VerticalAlignment="Center" Click="Button_Click_Stop" Margin="10,0,0,0"/>
                 <Button FontFamily="Segoe MDL2 Assets" Content="&#xE892;"  VerticalAlignment="Center" Click="Button_Click_Stop" Margin="10,0,0,0"/>
-                <Button FontFamily="Segoe MDL2 Assets" Content="&#xE893;" VerticalAlignment="Center" Click="PlayNextSong_Click" />
+                <Button FontFamily="Segoe MDL2 Assets" Content="&#xE893;" VerticalAlignment="Center" Click="PlayNextSongButton_Click" />
                
                 <Slider x:Name="seekPositionSlider"  Width="200"  Margin="10,0,0,0" HorizontalAlignment="Right"  Maximum="100" 
                      ManipulationMode="All"
