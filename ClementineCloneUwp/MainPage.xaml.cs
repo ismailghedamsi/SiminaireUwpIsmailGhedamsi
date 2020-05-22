@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Toolkit.Uwp.UI.Controls;
+using NAudio.Wave;
 using Syncfusion.Data.Extensions;
 using Syncfusion.XForms.AvatarView;
 using System;
@@ -52,6 +53,7 @@ namespace ClementineCloneUwp
         private MediaPlayer player;
         private static int currentPlayingSongIndex;
         private bool manuallySeek;
+        Timer timer;
 
 
         private async Task RetrieveSongMetadata(ObservableCollection<StorageFile> listsongStorage, ObservableCollection<Song> listSong)
@@ -130,17 +132,23 @@ namespace ClementineCloneUwp
 
         private void UpdateTimelineSlider()
         {
-            Timer timer = new System.Threading.Timer(async (e) =>
-            {
-                await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-               () =>
-               {
-                   seekPositionSlider.Value += player.PlaybackSession.NaturalDuration.TotalSeconds / 100;
-                   Debug.WriteLine(seekPositionSlider.Value);
-               }
-             );
-            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+
+                timer = new System.Threading.Timer(async (e) =>
+                {
+                    await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                   () =>
+                   {
+
+                       if (!Double.IsInfinity(99.0 / player.PlaybackSession.NaturalDuration.TotalSeconds))
+                       {
+                           seekPositionSlider.Value += (100.0 / player.PlaybackSession.NaturalDuration.TotalSeconds);
+                       }
+                   }
+                 );
+                }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
         }
+
+
 
         private void SeekPositionSlider_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
@@ -197,7 +205,10 @@ namespace ClementineCloneUwp
         private async void PlayNewSong_MediaEnded(MediaPlayer sender, object args)
         {
             Console.WriteLine("a new song with be played");
+
             player.Dispose();
+            timer.Dispose();
+
             player = new MediaPlayer();
             player.MediaEnded += PlayNewSong_MediaEnded;
             currentPlayingSongIndex++;
