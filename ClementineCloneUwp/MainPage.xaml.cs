@@ -345,9 +345,24 @@ namespace ClementineCloneUwp
             player.Play();
         }
 
-        private void splitView_EffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
-        {
 
+        private void PlayPreviousSongButton_Click(object sender, RoutedEventArgs e)
+        {
+            player.Dispose();
+            player = new MediaPlayer();
+            player.MediaEnded += PlayNewSong_MediaEnded;
+
+            if (--currentPlayingSongPlaylistIndex > 0 && playingMode == PlayingMode.PLAYLIST)
+            {
+                player.SetFileSource(playlistTracks[currentPlayingSongPlaylistIndex]);
+                dataGrid.SelectedIndex = currentPlayingSongPlaylistIndex;
+            }
+            else if (--currentPlayingSongMusicLibraryIndex > 0)
+            {
+                player.SetFileSource(musicLibrary[currentPlayingSongMusicLibraryIndex]);
+                dataGrid.SelectedIndex = currentPlayingSongMusicLibraryIndex;
+            }
+            player.Play();
         }
     }
 }
