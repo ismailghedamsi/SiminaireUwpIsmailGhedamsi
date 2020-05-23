@@ -65,6 +65,7 @@ namespace ClementineCloneUwp
 
         private async void Continue_playing(object sender,RoutedEventArgs e)
         {
+            UpdateTimelineSlider();
             await MusicPlayerController.PlayAsync(player);
         }
 
@@ -283,6 +284,7 @@ namespace ClementineCloneUwp
 
         private void Button_Click_Stop(object sender, RoutedEventArgs e)
         {
+            timer.Change(Timeout.Infinite, Timeout.Infinite);
             MusicPlayerController.PausePlayer(player);
         }
 
@@ -327,19 +329,25 @@ namespace ClementineCloneUwp
             player.Dispose();
             player = new MediaPlayer();
             player.MediaEnded += PlayNewSong_MediaEnded;
-            if(playingMode == PlayingMode.PLAYLIST)
+        
+            if(++currentPlayingSongPlaylistIndex< playlistTracks.Count && playingMode == PlayingMode.PLAYLIST)
             {
-                player.SetFileSource(playlistTracks[currentPlayingSongPlaylistIndex++]);
-                dataGrid.SelectedItem = currentPlayingSongPlaylistIndex;
+                player.SetFileSource(playlistTracks[currentPlayingSongPlaylistIndex]);
+                dataGrid.SelectedIndex = currentPlayingSongPlaylistIndex;
             }
-            else
+            else if(++currentPlayingSongMusicLibraryIndex < musicLibrary.Count)
             {
-                player.SetFileSource(musicLibrary[currentPlayingSongMusicLibraryIndex++]);
-                dataGrid.SelectedItem = currentPlayingSongPlaylistIndex;
+                player.SetFileSource(musicLibrary[currentPlayingSongMusicLibraryIndex]);
+                dataGrid.SelectedIndex = currentPlayingSongMusicLibraryIndex;
             }
          
            
             player.Play();
+        }
+
+        private void splitView_EffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+        {
+
         }
     }
 }

@@ -38,6 +38,7 @@ namespace ClementineCloneUwp
 
         public static void PausePlayer(MediaPlayer player)
         {
+           
             player.Pause();
         }
 
