@@ -155,13 +155,19 @@ namespace ClementineCloneUwp
                 var items = await e.DataView.GetStorageItemsAsync();
                 if (items.Any())
                 {
-                    var storageFile = items[0] as StorageFile;
-                    var contentType = storageFile.ContentType;
                     StorageFolder folder = ApplicationData.Current.LocalFolder;
-                    StorageFile newFile = await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.GenerateUniqueName);
-                    MusicProperties metaData = await newFile.Properties.GetMusicPropertiesAsync();
-                    player.SetFileSource(storageFile);
-                    PlaylistsongsMetaData.Add(new Song(metaData.Title, metaData.Artist, metaData.Album, Math.Round(metaData.Duration.TotalMinutes, 2), metaData.Genre.Count == 0 ? "" : metaData.Genre[0], newFile.Path));
+
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        var storageFile = items[i] as StorageFile;
+                        var contentType = storageFile.ContentType;
+                        StorageFile newFile = await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.GenerateUniqueName);
+                        MusicProperties metaData = await newFile.Properties.GetMusicPropertiesAsync();
+                        playlistTracks.Add(newFile);
+                        PlaylistsongsMetaData.Add(new Song(metaData.Title, metaData.Artist, metaData.Album, AudioFileRetriever.FormatTrackDuration(metaData.Duration.TotalMinutes), metaData.Genre.Count == 0 ? "" : metaData.Genre[0], newFile.Path));
+                    }
+                    
+                   
                     dataGrid.ItemsSource = null;
                     dataGrid.Columns.Clear();
                     dataGrid.ItemsSource = PlaylistsongsMetaData;
@@ -174,14 +180,15 @@ namespace ClementineCloneUwp
 
         private async void PlayNewSong_MediaEnded(MediaPlayer sender, object args)
         {
+            timer.Change(Timeout.Infinite, Timeout.Infinite);
             bool isPlayingPlaylistTrack = playingMode == PlayingMode.PLAYLIST;
             Console.WriteLine("a new song with be played");
             player.Dispose();
             player = new MediaPlayer();
 
             player.MediaEnded += PlayNewSong_MediaEnded;
-           
-            if(isPlayingPlaylistTrack)
+            timer.Change(Timeout.Infinite, Timeout.Infinite);
+            if (isPlayingPlaylistTrack)
             {
                 currentPlayingSongPlaylistIndex++;
                 SetCurrentPlayingSong(playlistTracks, currentPlayingSongPlaylistIndex);
@@ -208,6 +215,7 @@ namespace ClementineCloneUwp
             {
                 player.Play();
             }
+            UpdateTimelineSlider();
 
         }
 
