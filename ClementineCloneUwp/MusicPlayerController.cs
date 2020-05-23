@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.Media.Playback;
 using Windows.Storage;
@@ -7,7 +10,7 @@ using Windows.UI.Core;
 
 namespace ClementineCloneUwp
 {
-    public static class  MusicPlayerManager
+    public static class MusicPlayerController
     {
         public static async Task PlayAsync(MediaPlayer player)
         {
@@ -17,26 +20,31 @@ namespace ClementineCloneUwp
                  try
                  {
                      player.Play();
-                 }catch(Exception e)
+                 }
+                 catch (Exception e)
                  {
                      Debug.WriteLine(e.Message);
                  }
-            
+
              }
              );
         }
 
-        public static void ReinitiatePlayer(MediaPlayer player)
+        public static void ReinitiatePlayer(ref MediaPlayer player)
         {
             player.Dispose();
-            return  new MediaPlayer();
+            player = new MediaPlayer();
         }
 
- 
-        public static void SelectAnotherTrack(MediaPlayer player,StorageFile file)
+        public static void PausePlayer(MediaPlayer player)
+        {
+            player.Pause();
+        }
+
+
+            public static void SelectAnotherTrack(MediaPlayer player, StorageFile file)
         {
             player.SetFileSource(file);
         }
-
     }
 }

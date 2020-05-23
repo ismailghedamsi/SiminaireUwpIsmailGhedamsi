@@ -1,39 +1,19 @@
 ﻿
 using Microsoft.Toolkit.Uwp.UI.Controls;
-using NAudio.Wave;
-using Syncfusion.Data.Extensions;
-using Syncfusion.XForms.AvatarView;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
-using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Gaming.Input.ForceFeedback;
-using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
-using Windows.Storage.AccessCache;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Xamarin.Forms;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -46,53 +26,36 @@ namespace ClementineCloneUwp
     public sealed partial class MainPage : Windows.UI.Xaml.Controls.Page
     {
 
-        private ObservableCollection<Song> Songs;
+        private ObservableCollection<Song> PlaylistsongsMetaData;
+        private ObservableCollection<Song> MusicLibrarySongsMetaData;
         private FolderPicker picker;
-        private ObservableCollection<StorageFile> allSongsStorageFiles;
+        private ObservableCollection<StorageFile> musicLibrary;
+        private ObservableCollection<StorageFile> playlistTracks;
         private StorageFolder folder = KnownFolders.MusicLibrary;
         private MediaPlayer player;
-        private static int currentPlayingSongIndex;
-        private bool manuallySeek;
-        Timer timer;
+        private static int currentPlayingSongMusicLibraryIndex;
+        private static int currentPlayingSongPlaylistIndex;
+        private Timer timer;
+        private PlayingMode playingMode;
 
 
-        private async Task RetrieveSongMetadata(ObservableCollection<StorageFile> listsongStorage, ObservableCollection<Song> listSong)
-        {
-            foreach(var item in listsongStorage)
-            {
-                MusicProperties metaData = await item.Properties.GetMusicPropertiesAsync();
-                listSong.Add(new Song(metaData.Title,metaData.Artist,metaData.Album, Math.Round(metaData.Duration.TotalMinutes,2), metaData.Genre,item.Path));  
-            }
-        }
-
-        private async Task RetreiveFilesInFolders(ObservableCollection<StorageFile> list,StorageFolder parent)
-        {
-            foreach(var item in await parent.GetFilesAsync())
-            {
-                if(item.FileType == ".mp3")
-                {
-                    list.Add(item);
-                }
-            }
-
-            foreach(var item in await parent.GetFoldersAsync())
-            {
-                await RetreiveFilesInFolders(list, item);
-            }
-        }
 
 
         public MainPage()
         {
             this.InitializeComponent();
-        
-            allSongsStorageFiles = new ObservableCollection<StorageFile>();
-            Songs = new ObservableCollection<Song>();
+            musicLibrary = new ObservableCollection<StorageFile>();
+            PlaylistsongsMetaData = new ObservableCollection<Song>();
+            MusicLibrarySongsMetaData = new ObservableCollection<Song>();
+            playlistTracks = new ObservableCollection<StorageFile>();
             player = new MediaPlayer();
             player.MediaEnded += PlayNewSong_MediaEnded;
             volumeSlider.Value = player.Volume * 100;
-            currentPlayingSongIndex = 0;
-       
+            currentPlayingSongMusicLibraryIndex = 0;
+            currentPlayingSongPlaylistIndex = 0;
+            playingMode = PlayingMode.PLAYLIST;
+
+
         }
 
         private  void OpenCloseSplitView_Click(object sender, RoutedEventArgs e)
@@ -100,11 +63,10 @@ namespace ClementineCloneUwp
             splitView.IsPaneOpen = !splitView.IsPaneOpen;
         }
 
-        private void Continue_playing(object sender,RoutedEventArgs e)
+        private async void Continue_playing(object sender,RoutedEventArgs e)
         {
-            player.Play();
+            await MusicPlayerController.PlayAsync(player);
         }
-
 
 
         private async void PlaySongFromGrid_DoubleClick(object sender, DoubleTappedRoutedEventArgs ev)
@@ -115,16 +77,25 @@ namespace ClementineCloneUwp
             player.Dispose();
             player = new MediaPlayer();
             player.MediaEnded += PlayNewSong_MediaEnded;
-            player.SetFileSource(file);
+       
 
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High,
              () =>
              {
-                 player.Play();
+                     player.SetFileSource(file);
+                     player.Play();
              }
              );
 
-            currentPlayingSongIndex = dataGrid.SelectedIndex;
+            if(playingMode == PlayingMode.PLAYLIST)
+            {
+                currentPlayingSongPlaylistIndex = dataGrid.SelectedIndex;
+            }
+            else
+            {
+                currentPlayingSongMusicLibraryIndex = dataGrid.SelectedIndex;
+            }
+        
             seekPositionSlider.Value = 0;
             seekPositionSlider.ManipulationCompleted += SeekPositionSlider_ManipulationCompleted;
             UpdateTimelineSlider();
@@ -132,17 +103,23 @@ namespace ClementineCloneUwp
 
         private void UpdateTimelineSlider()
         {
-
-                timer = new System.Threading.Timer(async (e) =>
+        
+            timer = new System.Threading.Timer(async (e) =>
                 {
                     await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                    () =>
                    {
 
-                       if (!Double.IsInfinity(99.0 / player.PlaybackSession.NaturalDuration.TotalSeconds))
+                       double increaseRate = 100.0 / player.PlaybackSession.NaturalDuration.TotalSeconds;
+                       if (player != null && !Double.IsInfinity(increaseRate))
                        {
-                           seekPositionSlider.Value += (100.0 / player.PlaybackSession.NaturalDuration.TotalSeconds);
+                           seekPositionSlider.Value += (99.0 / player.PlaybackSession.NaturalDuration.TotalSeconds);
                        }
+                       else
+                       {
+                           increaseRate = 1;
+                       }
+
                    }
                  );
                 }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
@@ -169,14 +146,7 @@ namespace ClementineCloneUwp
 
         }
 
-        public string FormatTrackDuration(double minutes)
-        {
-            string secondsPart = minutes.ToString().Split(",")[1];
-            string minutesPart = minutes.ToString().Split(",")[0];
-            int nbMinuteFromSeconds = int.Parse(secondsPart) / 60;
-            int restOfSeconds = int.Parse(secondsPart) % 60;
-            return "";
-        }
+ 
 
         private async void dataGrid_Drop(object sender, DragEventArgs e)
         {
@@ -191,10 +161,10 @@ namespace ClementineCloneUwp
                     StorageFile newFile = await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.GenerateUniqueName);
                     MusicProperties metaData = await newFile.Properties.GetMusicPropertiesAsync();
                     player.SetFileSource(storageFile);
-                    Songs.Add(new Song(metaData.Title, metaData.Artist, metaData.Album, Math.Round(metaData.Duration.TotalMinutes, 2), metaData.Genre.Count == 0 ? "" : metaData.Genre[0], newFile.Path));
+                    PlaylistsongsMetaData.Add(new Song(metaData.Title, metaData.Artist, metaData.Album, Math.Round(metaData.Duration.TotalMinutes, 2), metaData.Genre.Count == 0 ? "" : metaData.Genre[0], newFile.Path));
                     dataGrid.ItemsSource = null;
                     dataGrid.Columns.Clear();
-                    dataGrid.ItemsSource = Songs;
+                    dataGrid.ItemsSource = PlaylistsongsMetaData;
 
 
                 }
@@ -204,31 +174,50 @@ namespace ClementineCloneUwp
 
         private async void PlayNewSong_MediaEnded(MediaPlayer sender, object args)
         {
+            bool isPlayingPlaylistTrack = playingMode == PlayingMode.PLAYLIST;
             Console.WriteLine("a new song with be played");
-
             player.Dispose();
-            timer.Dispose();
-
             player = new MediaPlayer();
+
             player.MediaEnded += PlayNewSong_MediaEnded;
-            currentPlayingSongIndex++;
-            if(allSongsStorageFiles.Count > currentPlayingSongIndex)
+           
+            if(isPlayingPlaylistTrack)
             {
-                player.SetFileSource(allSongsStorageFiles[currentPlayingSongIndex]);
+                currentPlayingSongPlaylistIndex++;
+                SetCurrentPlayingSong(playlistTracks, currentPlayingSongPlaylistIndex);
             }
+            else
+            {
+                currentPlayingSongMusicLibraryIndex++;
+                SetCurrentPlayingSong(musicLibrary,currentPlayingSongMusicLibraryIndex);
+            }
+            
+          
 
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
             () =>
             {
-                dataGrid.SelectedIndex = currentPlayingSongIndex;
+                dataGrid.SelectedIndex = isPlayingPlaylistTrack ? currentPlayingSongPlaylistIndex : currentPlayingSongMusicLibraryIndex;
                 seekPositionSlider.Value = 0;
+              
+          
             }
             );
-            player.Play();
-            
-       
+
+            if (player != null)
+            {
+                player.Play();
+            }
+
         }
-  
+
+        private void SetCurrentPlayingSong(ObservableCollection<StorageFile> tracks,int currentPlayingSong)
+        {
+            if (tracks.Count > currentPlayingSong)
+            {
+                player.SetFileSource(tracks[currentPlayingSong]);
+            }
+        }
 
         public void GenerateColumnHeaderManually()
         {
@@ -274,27 +263,32 @@ namespace ClementineCloneUwp
             e.Column.Visibility = Visibility.Visible;
         }
 
-        private void showPlaylistButton_Click(object sender,RoutedEventArgs e)
+        private void ButtonPlaylist_Click(object sender,RoutedEventArgs e)
         {
+            playingMode = PlayingMode.PLAYLIST;
             dataGrid.ItemsSource = null;
             dataGrid.Columns.Clear();
-            GenerateColumnHeaderManually();
+            //GenerateColumnHeaderManually();
+            dataGrid.ItemsSource = PlaylistsongsMetaData;
+            dataGrid.SelectedIndex = currentPlayingSongPlaylistIndex;
         }
 
         private void Button_Click_Stop(object sender, RoutedEventArgs e)
         {
-            player.Pause();
+            MusicPlayerController.PausePlayer(player);
         }
 
         private  async void Button_Click_Library(object sender, RoutedEventArgs e)
         {
-            await RetreiveFilesInFolders(allSongsStorageFiles, folder);
-            await RetrieveSongMetadata(allSongsStorageFiles, Songs);
-            if(Songs.Count == 0 || dataGrid.ItemsSource == null)
+            playingMode = PlayingMode.MUSIC_LIBRARY;
+            await AudioFileRetriever.RetreiveFilesInFolders(musicLibrary, folder);
+            await AudioFileRetriever.RetrieveSongMetadata(musicLibrary, MusicLibrarySongsMetaData);
+            if(MusicLibrarySongsMetaData.Count == 0 || dataGrid.ItemsSource == null)
             {
                 dataGrid.Columns.Clear();
             }
-            dataGrid.ItemsSource = Songs;
+            dataGrid.ItemsSource = MusicLibrarySongsMetaData;
+            dataGrid.SelectedIndex = currentPlayingSongMusicLibraryIndex;
         }
 
         private void volumeSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -311,17 +305,33 @@ namespace ClementineCloneUwp
             picker.SuggestedStartLocation = PickerLocationId.Desktop;
             picker.FileTypeFilter.Add("*");
             var folder = await picker.PickSingleFolderAsync();
-            await RetreiveFilesInFolders(folderFiles, folder);
-            await RetrieveSongMetadata(folderFiles, songs);
+            await AudioFileRetriever.RetreiveFilesInFolders(playlistTracks, folder);
+            await AudioFileRetriever.RetrieveSongMetadata(playlistTracks, PlaylistsongsMetaData);
             dataGrid.ItemsSource = null;
             dataGrid.Columns.Clear();
-            dataGrid.ItemsSource = songs;
+            dataGrid.ItemsSource = PlaylistsongsMetaData;
         }
 
 
         private void PlayNextSongButton_Click(object sender, RoutedEventArgs e)
         {
-            dataGrid.SelectedItem = currentPlayingSongIndex;
+
+            player.Dispose();
+            player = new MediaPlayer();
+            player.MediaEnded += PlayNewSong_MediaEnded;
+            if(playingMode == PlayingMode.PLAYLIST)
+            {
+                player.SetFileSource(playlistTracks[currentPlayingSongPlaylistIndex++]);
+                dataGrid.SelectedItem = currentPlayingSongPlaylistIndex;
+            }
+            else
+            {
+                player.SetFileSource(musicLibrary[currentPlayingSongMusicLibraryIndex++]);
+                dataGrid.SelectedItem = currentPlayingSongPlaylistIndex;
+            }
+         
+           
+            player.Play();
         }
     }
 }

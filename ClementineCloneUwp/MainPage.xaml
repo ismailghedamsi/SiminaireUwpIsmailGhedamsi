@@ -44,7 +44,7 @@
 
 
                     <StackPanel Orientation="Horizontal">
-                        <Button Content="Playlist"  ToolTipService.ToolTip="Playlist" Click="showPlaylistButton_Click" FontFamily="Segoe MDL2 Assets" FontSize="25" Width="50" Height="50"/>
+                        <Button Content="Playlist"  ToolTipService.ToolTip="Playlist" Click="ButtonPlaylist_Click" FontFamily="Segoe MDL2 Assets" FontSize="25" Width="50" Height="50"/>
                         <TextBlock VerticalAlignment="Center">Playlist</TextBlock>
                     </StackPanel>
 

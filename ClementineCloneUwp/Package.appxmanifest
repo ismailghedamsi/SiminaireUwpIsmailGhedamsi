@@ -4,7 +4,9 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-  IgnorableNamespaces="uap mp">
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4"
+  IgnorableNamespaces="uap mp uap3 uap4">
 
   <Identity
     Name="c82466c2-7879-4eb0-9394-e226d9f7ab9d"
@@ -46,5 +48,8 @@
   <Capabilities>
 <uap:Capability Name="removableStorage"/>
 <uap:Capability Name="musicLibrary"/>
+<uap3:Capability Name="remoteSystem"/>
+<uap4:Capability Name="userDataTasks"/>
+<uap3:Capability Name="backgroundMediaPlayback"/>
   </Capabilities>
 </Package>
