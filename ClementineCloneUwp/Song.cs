@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClementineCloneUwp
 {
-    public class Song
+    public class Song : IComparer<Song>
     {
         private IList<string> genre;
 
@@ -42,5 +42,9 @@ namespace ClementineCloneUwp
             Path = path;
         }
 
+        public int Compare(Song x, Song y)
+        {
+           return  x.Title.CompareTo(y.Title);
+        }
     }
 }

@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.Toolkit.Uwp.UI.Controls;
+using Syncfusion.Data.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -11,6 +13,7 @@ using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
@@ -263,7 +266,7 @@ namespace ClementineCloneUwp
 
         private  void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            GenerateColumnHeaderManually();
+            //GenerateColumnHeaderManually();
         }
 
         private void DG1_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
@@ -297,6 +300,7 @@ namespace ClementineCloneUwp
             {
                 dataGrid.Columns.Clear();
             }
+            MusicLibrarySongsMetaData = MusicLibrarySongsMetaData.OrderBy(o => o.Title).ToObservableCollection();
             dataGrid.ItemsSource = MusicLibrarySongsMetaData;
             dataGrid.SelectedIndex = currentPlayingSongMusicLibraryIndex;
         }
@@ -348,6 +352,7 @@ namespace ClementineCloneUwp
 
         private void PlayPreviousSongButton_Click(object sender, RoutedEventArgs e)
         {
+
             player.Dispose();
             player = new MediaPlayer();
             player.MediaEnded += PlayNewSong_MediaEnded;
@@ -364,5 +369,6 @@ namespace ClementineCloneUwp
             }
             player.Play();
         }
+
     }
 }

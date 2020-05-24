@@ -61,7 +61,6 @@
         </SplitView>
         <!-- ItemsSource="{x:Bind Songs}"-->
         <controls:DataGrid x:Name="dataGrid"
-                           AutoGenerateColumns="True" 
                            HeadersVisibility="All"
                             Background="Beige"
                              IsReadOnly="True"
@@ -71,9 +70,21 @@
                            Drop="dataGrid_Drop"
                            DragOver="dataGrid_DragOver"
                            SelectionMode="Extended"
+                           CanUserReorderColumns="True"
                            ScrollViewer.VerticalScrollBarVisibility="Visible"
                            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                           ScrollViewer.VerticalScrollMode="Enabled" Grid.ColumnSpan="2" Margin="145,45,0,105" Grid.RowSpan="3"/>
+                           ScrollViewer.VerticalScrollMode="Enabled" Grid.ColumnSpan="2" Margin="145,45,0,105" Grid.RowSpan="3" >
+            <controls:DataGrid.Columns>
+                <controls:DataGridTextColumn Header="ID" Tag="ID"/>
+                <controls:DataGridTextColumn Header="Title" Tag="Title" />
+                <controls:DataGridTextColumn Header="Artist" Tag="Artist"/>
+                <controls:DataGridTextColumn Header="Album" Tag="Album"/>
+                <controls:DataGridTextColumn Header="Duration" Tag="Duration"/>
+                <controls:DataGridTextColumn Header="Genre" Tag="Genre"/>
+                <controls:DataGridTextColumn Header="Path" Tag="ID"/>
+            </controls:DataGrid.Columns>
+
+        </controls:DataGrid>
 
 
         <RelativePanel Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" >
@@ -85,7 +96,7 @@
                 <Button  FontFamily="Segoe MDL2 Assets" Content="&#xE768;" VerticalAlignment="Center" Click="Continue_playing" />
                 <Button  FontFamily="Segoe MDL2 Assets" Content="&#xE769;"  VerticalAlignment="Center" Click="Button_Click_Stop" Margin="10,0,0,0"/>
                 <Button FontFamily="Segoe MDL2 Assets" Content="&#xE892;"  VerticalAlignment="Center" Click="PlayPreviousSongButton_Click" Margin="10,0,0,0"/>
-                <Button FontFamily="Segoe MDL2 Assets" Content="&#xE893;" VerticalAlignment="Center" Click="PlayNextSongButton_Click" />
+                <Button FontFamily="Segoe MDL2 Assets" Content="&#xE893;" VerticalAlignment="Center" Click="PlayNextSongButton_Click"   Margin="10,0,0,0"/>
                
                 <Slider x:Name="seekPositionSlider"  Width="200"  Margin="10,0,0,0" HorizontalAlignment="Right"  Maximum="100" 
                      ManipulationMode="All"
@@ -94,7 +105,6 @@
 
             <Slider x:Name="volumeSlider" Width="200"  Margin="10,0,0,0" HorizontalAlignment="Right"
                     ValueChanged="volumeSlider_ValueChanged"   
-                    RelativePanel.AlignHorizontalCenterWith="stackManelMusicControl"
                     RelativePanel.AlignRightWithPanel="True"
                     />
         </RelativePanel>
