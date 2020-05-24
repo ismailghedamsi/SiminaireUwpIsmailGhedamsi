@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
@@ -300,7 +301,6 @@ namespace ClementineCloneUwp
             {
                 dataGrid.Columns.Clear();
             }
-            MusicLibrarySongsMetaData = MusicLibrarySongsMetaData.OrderBy(o => o.Title).ToObservableCollection();
             dataGrid.ItemsSource = MusicLibrarySongsMetaData;
             dataGrid.SelectedIndex = currentPlayingSongMusicLibraryIndex;
         }
@@ -326,7 +326,7 @@ namespace ClementineCloneUwp
             dataGrid.ItemsSource = PlaylistsongsMetaData;
         }
 
-
+        [Obsolete]
         private void PlayNextSongButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -344,29 +344,29 @@ namespace ClementineCloneUwp
                 player.SetFileSource(musicLibrary[currentPlayingSongMusicLibraryIndex]);
                 dataGrid.SelectedIndex = currentPlayingSongMusicLibraryIndex;
             }
-         
-           
+            seekPositionSlider.Value = 0;
             player.Play();
         }
 
-
+        [Obsolete]
         private void PlayPreviousSongButton_Click(object sender, RoutedEventArgs e)
         {
 
-            player.Dispose();
-            player = new MediaPlayer();
+            MusicPlayerController.ReinitiatePlayer(ref player);
             player.MediaEnded += PlayNewSong_MediaEnded;
 
             if (--currentPlayingSongPlaylistIndex > 0 && playingMode == PlayingMode.PLAYLIST)
             {
                 player.SetFileSource(playlistTracks[currentPlayingSongPlaylistIndex]);
                 dataGrid.SelectedIndex = currentPlayingSongPlaylistIndex;
+           
             }
             else if (--currentPlayingSongMusicLibraryIndex > 0)
             {
                 player.SetFileSource(musicLibrary[currentPlayingSongMusicLibraryIndex]);
                 dataGrid.SelectedIndex = currentPlayingSongMusicLibraryIndex;
             }
+            seekPositionSlider.Value = 0;
             player.Play();
         }
 
