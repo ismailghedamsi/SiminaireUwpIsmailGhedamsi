@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Media.Playback;
 using Windows.Storage;
@@ -43,7 +40,7 @@ namespace ClementineCloneUwp
         }
 
 
-            public static void SelectAnotherTrack(MediaPlayer player, StorageFile file)
+        public static void SelectNewSource(MediaPlayer player, StorageFile file)
         {
             player.SetFileSource(file);
         }

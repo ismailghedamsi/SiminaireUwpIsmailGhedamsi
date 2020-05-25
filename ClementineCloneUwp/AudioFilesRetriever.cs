@@ -42,18 +42,22 @@ namespace ClementineCloneUwp
 
         public static async Task RetreiveFilesInFolders(ObservableCollection<StorageFile> list, StorageFolder parent)
         {
-            foreach (var item in await parent.GetFilesAsync())
+            if(parent != null)
             {
-                if (item.FileType == ".mp3")
+                foreach (var item in await parent.GetFilesAsync())
                 {
-                    list.Add(item);
+                    if (item.FileType == ".mp3")
+                    {
+                        list.Add(item);
+                    }
+                }
+
+                foreach (var item in await parent.GetFoldersAsync())
+                {
+                    await RetreiveFilesInFolders(list, item);
                 }
             }
-
-            foreach (var item in await parent.GetFoldersAsync())
-            {
-                await RetreiveFilesInFolders(list, item);
-            }
+       
         }
 
     }

@@ -2,24 +2,20 @@
     x:Class="ClementineCloneUwp.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ClementineCloneUwp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Loaded="Page_Loaded"
     mc:Ignorable="d"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+   >
 
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:syncfusion="using:Syncfusion.SfDataGrid.XForms"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-    <Grid>
+    <Grid x:Name="button">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
-            <!-- Command menu-->
-            <RowDefinition Height="5*"/>
-            <!-- Grid menu-->
+            <!-- Command menu 12.5-->
+            <RowDefinition Height="6*"/> 
+            <!-- Grid menu 75%-->
             <RowDefinition  Height="1*" />
-            <!-- Command menu-->
-
+            <!-- Music controllers 12.15-->
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -28,11 +24,19 @@
         </Grid.ColumnDefinitions>
 
         <CommandBar x:Name="commandBar" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-            <AppBarButton x:Name="OpenFolderAppBarButton" FontFamily="Segoe MDL2 Assets" Content="&#xE838;" ToolTipService.ToolTip="Open a music directory" Click="OpenFolder_Click" />
+            <AppBarButton x:Name="OpenFolderAppBarButton"
+                          FontFamily="Segoe MDL2 Assets" 
+                          Content="&#xE838;" 
+                          ToolTipService.ToolTip="Open a music directory" 
+                          Click="OpenFolder_Click" />
             <AppBarButton Content="Close"/>
         </CommandBar>
-        <SplitView x:Name="splitView" DisplayMode="CompactOverlay" Grid.Column="0" Grid.Row="1"
-                   CompactPaneLength="50" OpenPaneLength="150"
+        <SplitView x:Name="splitView"
+                   DisplayMode="CompactOverlay"
+                   Grid.Column="0" 
+                   Grid.Row="1"
+                   CompactPaneLength="50"
+                   OpenPaneLength="150"
                    >
             <SplitView.Pane>
                 <StackPanel Background="Gray">
@@ -52,28 +56,27 @@
                         <Button  ToolTipService.ToolTip="Music Library" Content="&#xE8D6;" FontFamily="Segoe MDL2 Assets" FontSize="25"  Width="50" Height="50" Click="Button_Click_Library" />
                         <TextBlock VerticalAlignment="Center">Music Library</TextBlock>
                     </StackPanel>
-
-
-                   
                 </StackPanel>
-          
+
             </SplitView.Pane>
         </SplitView>
-        <!-- ItemsSource="{x:Bind Songs}"-->
         <controls:DataGrid x:Name="dataGrid"
                            HeadersVisibility="All"
                             Background="Beige"
                              IsReadOnly="True"
                            DoubleTapped="PlaySongFromGrid_DoubleClick"        
-                           AllowDrop="True"
-                           AutoGeneratingColumn="DG1_AutoGeneratingColumn" 
-                           Drop="dataGrid_Drop"
+                           AllowDrop="True"                     
                            DragOver="dataGrid_DragOver"
+                           Drop="dataGrid_Drop"
                            SelectionMode="Extended"
                            CanUserReorderColumns="True"
                            ScrollViewer.VerticalScrollBarVisibility="Visible"
                            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                           ScrollViewer.VerticalScrollMode="Enabled" Grid.ColumnSpan="2" Margin="145,45,0,105" Grid.RowSpan="3" >
+                           ScrollViewer.VerticalScrollMode="Enabled"
+                           Grid.ColumnSpan="2"
+                           Margin="145,45,0,105"
+                           Grid.RowSpan="3"
+                           KeyUp="DeleteRowKeyUp_Click" >
             <controls:DataGrid.Columns>
                 <controls:DataGridTextColumn Header="ID" Tag="ID"/>
                 <controls:DataGridTextColumn Header="Title" Tag="Title" />
@@ -98,7 +101,7 @@
                 <Button FontFamily="Segoe MDL2 Assets" Content="&#xE892;"  VerticalAlignment="Center" Click="PlayPreviousSongButton_Click" Margin="10,0,0,0"/>
                 <Button FontFamily="Segoe MDL2 Assets" Content="&#xE893;" VerticalAlignment="Center" Click="PlayNextSongButton_Click"   Margin="10,0,0,0"/>
                
-                <Slider x:Name="seekPositionSlider"  Width="200"  Margin="10,0,0,0" HorizontalAlignment="Right"  Maximum="100" 
+                <Slider x:Name="timelineSlider"  Width="200"  Margin="10,0,0,0" HorizontalAlignment="Right"  Maximum="100" 
                      ManipulationMode="All"
                     />
             </StackPanel>
@@ -108,9 +111,6 @@
                     RelativePanel.AlignRightWithPanel="True"
                     />
         </RelativePanel>
-        
-   
-
-
+       
     </Grid>
 </Page>

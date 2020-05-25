@@ -29,7 +29,7 @@ namespace ClementineCloneUwp
         public static void ReinitiatePlayer(MediaPlayer player)
         {
             player.Dispose();
-            return  new MediaPlayer();
+           player =  new MediaPlayer();
         }
 
  
